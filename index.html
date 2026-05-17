@@ -8,8 +8,21 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
+  /* Override white theme — blue-tinted dot pattern bg */
+  body, .reveal {
+    background-color: #f5f8fb !important;
+    background-image:
+      radial-gradient(circle, rgba(44,95,138,0.05) 1.2px, transparent 1.2px),
+      radial-gradient(circle, rgba(44,95,138,0.035) 0.8px, transparent 0.8px),
+      linear-gradient(165deg, #eaf1f8 0%, #f5f8fb 35%, #faf9f7 65%, #f6f3f9 100%) !important;
+    background-size: 32px 32px, 20px 20px, 100% 100% !important;
+    background-position: 0 0, 10px 10px, 0 0 !important;
+    background-attachment: fixed !important;
+  }
+</style>
+<style>
   :root {
-    --bg:       #faf9f7;
+    --bg:       #f5f8fb;
     --surface:  #ffffff;
     --text:     #1a1a28;
     --text-dim: #5c5c6e;
@@ -28,7 +41,7 @@
   .reveal h1 { font-size: 2.2em; color: var(--text); margin-bottom: 0.3em; }
   .reveal h2 { font-size: 1.5em; color: var(--text); margin-bottom: 0.4em; }
   .reveal h3 { font-family: 'Inter', sans-serif; font-size: 1.1em; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; }
-  .reveal .slides section { padding: 40px 60px; text-align: left; }
+  .reveal .slides section { padding: 40px 60px; text-align: left; background: transparent; }
 
   /* Accent colors */
   .accent-red    { color: var(--red); }
