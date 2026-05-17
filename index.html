@@ -4,769 +4,842 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Part 3 — Disadvantages of the Media</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0b1622; --surface: #152238; --surface-light: #1c3050;
-    --gold: #d4a853; --gold-light: #e8c97a; --cream: #eee6d8; --cream-dim: #b8a99a;
-    --teal: #5baea0; --rose: #c4655c; --blue: #5b8cbe; --violet: #9b8ec4;
-    --orange: #e0884a; --transition: cubic-bezier(0.65, 0, 0.35, 1);
+    --bg:       #faf9f7;
+    --surface:  #ffffff;
+    --text:     #1a1a28;
+    --text-dim: #5c5c6e;
+    --red:      #c0392b;
+    --red-lt:   #e74c3c;
+    --orange:   #d4773a;
+    --blue:     #2c5f8a;
+    --green:    #398564;
+    --gold:     #b8860b;
+    --purple:   #6c4f8e;
+    --gray:     #7f8c8d;
+    --border:   #e8e5df;
   }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  html, body { width:100%; height:100%; overflow:hidden; background:var(--bg); font-family:'Work Sans',sans-serif; color:var(--cream); }
-  .presentation { width:100%; height:100vh; position:relative; }
+  .reveal { font-family: 'Inter', -apple-system, sans-serif; font-size: 24px; color: var(--text); }
+  .reveal h1, .reveal h2 { font-family: 'Merriweather', Georgia, serif; font-weight: 700; text-transform: none; letter-spacing: -0.02em; }
+  .reveal h1 { font-size: 2.2em; color: var(--text); margin-bottom: 0.3em; }
+  .reveal h2 { font-size: 1.5em; color: var(--text); margin-bottom: 0.4em; }
+  .reveal h3 { font-family: 'Inter', sans-serif; font-size: 1.1em; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; }
+  .reveal .slides section { padding: 40px 60px; text-align: left; }
 
-  .slide {
-    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-    padding:2.2rem 3.5rem; opacity:0; transform:translateX(60px);
-    transition:opacity 0.5s var(--transition),transform 0.5s var(--transition); pointer-events:none;
-  }
-  .slide.active { opacity:1; transform:translateX(0); pointer-events:auto; z-index:1; }
-  .slide.exit-left  { opacity:0; transform:translateX(-60px); }
-  .slide.exit-right { opacity:0; transform:translateX(60px);  }
+  /* Accent colors */
+  .accent-red    { color: var(--red); }
+  .accent-orange { color: var(--orange); }
+  .accent-blue   { color: var(--blue); }
 
-  .slide-inner { width:100%; max-width:1100px; display:grid; grid-template-columns:1fr 1fr; gap:2.5rem; align-items:center; }
-  .slide-inner.full { grid-template-columns:1fr; text-align:center; }
-
-  .slide-text h1 {
-    font-family:'Cormorant Garamond',serif; font-size:clamp(1.7rem,3.2vw,2.8rem);
-    font-weight:700; color:var(--cream); line-height:1.15; margin-bottom:0.8rem; letter-spacing:-0.01em;
-  }
-  .slide-text h1 .accent { color:var(--gold); font-style:italic; }
-  .slide-text h2 {
-    font-family:'Cormorant Garamond',serif; font-size:clamp(1.2rem,2vw,1.7rem);
-    font-weight:600; color:var(--gold); margin-bottom:1rem;
-  }
-  .slide-text .subtitle {
-    font-size:0.85rem; color:var(--cream-dim); letter-spacing:0.06em; text-transform:uppercase; margin-bottom:1rem;
-  }
-  .slide-text ul { list-style:none; display:flex; flex-direction:column; gap:0.55rem; }
-  .slide-text ul li {
-    position:relative; padding-left:1.4rem; font-size:0.92rem; line-height:1.5; color:var(--cream-dim);
-  }
-  .slide-text ul li::before {
-    content:''; position:absolute; left:0; top:0.5rem;
-    width:7px; height:7px; background:var(--gold); border-radius:50%;
-  }
-  .slide-text ul li strong { color:var(--cream); font-weight:500; }
-  .slide-visual { display:flex; align-items:center; justify-content:center; }
-  .slide-visual svg { width:100%; max-height:400px; }
-
-  .nav-arrows {
-    position:fixed; bottom:1.5rem; left:50%; transform:translateX(-50%);
-    display:flex; align-items:center; gap:1.5rem; z-index:100;
-  }
-  .nav-btn {
-    width:40px; height:40px; border-radius:50%;
-    border:1.5px solid rgba(238,230,216,0.25); background:rgba(21,35,56,0.85);
-    color:var(--cream); font-size:1.1rem; cursor:pointer;
-    display:flex; align-items:center; justify-content:center;
-    transition:all 0.25s; backdrop-filter:blur(8px);
-  }
-  .nav-btn:hover { border-color:var(--gold); background:rgba(212,168,83,0.15); color:var(--gold); }
-  .nav-btn:active { transform:scale(0.92); }
-  .slide-counter { font-size:0.8rem; color:var(--cream-dim); letter-spacing:0.04em; min-width:55px; text-align:center; }
-  .page-dots { position:fixed; top:1.2rem; right:1.2rem; display:flex; flex-direction:column; gap:4px; z-index:100; }
-  .page-dot {
-    width:6px; height:6px; border-radius:50%; background:rgba(238,230,216,0.2);
-    cursor:pointer; transition:all 0.3s;
-  }
-  .page-dot.active { background:var(--gold); transform:scale(1.5); }
-  .page-dot:hover { background:rgba(212,168,83,0.5); }
-
-  .section-badge {
-    display:inline-block; font-size:0.7rem; padding:0.12rem 0.6rem; border-radius:10px;
-    margin-bottom:0.5rem; letter-spacing:0.05em; font-weight:500;
-    background:rgba(196,101,92,0.18); color:#c4655c; border:1px solid rgba(196,101,92,0.3);
+  .badge {
+    display: inline-block; font-size: 0.55em; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 4px 14px; border-radius: 20px;
+    margin-bottom: 16px; color: var(--red); background: #fef0ef; border: 1px solid #fcd9d5;
   }
 
-  @media (max-width:800px) {
-    .slide-inner { grid-template-columns:1fr; gap:1rem; }
-    .slide { padding:1.2rem 1rem; }
-    .slide-visual svg { max-height:200px; }
-    .page-dots { top:0.4rem; right:0.4rem; gap:2px; }
-    .page-dot { width:4px; height:4px; }
+  /* Two-column layout */
+  .row { display: flex; gap: 40px; align-items: center; }
+  .col { flex: 1; }
+  .col-text { flex: 1; min-width: 0; }
+  .col-visual { flex: 1.1; display: flex; align-items: center; justify-content: center; }
+  .col-visual svg { width: 100%; max-height: 420px; }
+
+  /* Bullet list */
+  .reveal ul { list-style: none; margin: 0; padding: 0; }
+  .reveal ul li {
+    position: relative; padding-left: 22px; margin-bottom: 10px;
+    font-size: 0.85em; line-height: 1.55; color: var(--text-dim);
+  }
+  .reveal ul li::before {
+    content: ''; position: absolute; left: 0; top: 0.52em;
+    width: 7px; height: 7px; border-radius: 50%; background: var(--red);
+  }
+  .reveal ul li strong { color: var(--text); font-weight: 600; }
+
+  /* Center layout */
+  .center-all { text-align: center !important; align-items: center; }
+
+  /* Quote */
+  .quote {
+    font-family: 'Merriweather', Georgia, serif; font-style: italic;
+    color: var(--text-dim); font-size: 0.85em; margin-top: 16px;
+    padding-left: 18px; border-left: 3px solid var(--red-lt);
+  }
+
+  /* Fragment spacing */
+  .reveal .slides section .fragment { margin: 0; }
+
+  /* Section divider */
+  .section-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--red); color: #fff; font-weight: 700; font-size: 0.9em;
+    margin-right: 12px; flex-shrink: 0;
+  }
+
+  /* override reveal defaults */
+  .reveal .progress { color: var(--red); height: 4px; }
+  .reveal .controls { color: var(--red); }
+
+  @media (max-width: 900px) {
+    .row { flex-direction: column; gap: 16px; }
+    .reveal .slides section { padding: 20px 24px; }
+    .reveal h1 { font-size: 1.5em; }
   }
 </style>
 </head>
 <body>
-<div class="presentation" id="presentation">
+<div class="reveal">
+<div class="slides">
 
-<!-- ===== SECTION TITLE ===== -->
-  <div class="slide active" data-index="0">
-    <div class="slide-inner full" style="place-items:center;">
-      <div class="slide-text" style="text-align:center;max-width:750px;">
-        <div class="subtitle">Part 3</div>
-        <h1>Disadvantages of<br>the <span class="accent">Media</span></h1>
-        <p style="color:var(--cream-dim);font-size:1rem;margin-top:1.2rem;line-height:1.8;">
-          <span style="color:var(--orange);">①</span> Digital Divide &amp; Knowledge Gap &nbsp;|&nbsp;
-          <span style="color:var(--rose);">②</span> Violence, Passivity &amp; Addiction<br>
-          <span style="color:var(--violet);">③</span> Privacy, Data &amp; Filter Bubbles &nbsp;|&nbsp;
-          <span style="color:var(--blue);">④</span> Manipulation &amp; Trade-offs
-        </p>
-        <svg viewBox="0 0 280 40" style="max-width:200px;margin-top:1.5rem;opacity:0.35;">
-          <line x1="0" y1="20" x2="120" y2="20" stroke="#c4655c" stroke-width="0.8"/>
-          <circle cx="140" cy="20" r="5" fill="none" stroke="#c4655c" stroke-width="1.2"/>
-          <line x1="160" y1="20" x2="280" y2="20" stroke="#c4655c" stroke-width="0.8"/>
-        </svg>
-      </div>
-    </div>
+<!-- ================================================================ -->
+<!-- SLIDE 0: TITLE -->
+<!-- ================================================================ -->
+<section data-transition="fade">
+  <div class="center-all" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;">
+    <div class="badge" style="font-size:0.65em;">Part 3 · Chapter 6</div>
+    <h1 style="font-size:2.6em;text-align:center;">Disadvantages of<br>the <span class="accent-red">Media</span></h1>
+    <p style="font-size:0.85em;color:var(--text-dim);text-align:center;margin-top:12px;line-height:1.8;">
+      <span style="color:var(--red);font-weight:600;">①</span> Digital Divide &amp; Knowledge Gap &ensp;
+      <span style="color:var(--red);font-weight:600;">②</span> Violence, Passivity &amp; Addiction<br>
+      <span style="color:var(--red);font-weight:600;">③</span> Privacy, Data &amp; Filter Bubbles &ensp;
+      <span style="color:var(--red);font-weight:600;">④</span> Manipulation &amp; Trade-offs
+    </p>
+    <svg viewBox="0 0 320 40" style="width:220px;margin-top:28px;opacity:0.35;">
+      <defs><linearGradient id="grad1"><stop offset="0%" stop-color="#c0392b"/><stop offset="100%" stop-color="#e74c3c"/></linearGradient></defs>
+      <line x1="0" y1="20" x2="135" y2="20" stroke="url(#grad1)" stroke-width="1.2"/>
+      <circle cx="160" cy="20" r="6" fill="none" stroke="#c0392b" stroke-width="1.5"/>
+      <line x1="185" y1="20" x2="320" y2="20" stroke="url(#grad1)" stroke-width="1.2"/>
+    </svg>
   </div>
+</section>
 
-<!-- ============================================================ -->
+<!-- ================================================================ -->
 <!-- SECTION ①: DIGITAL DIVIDE & KNOWLEDGE GAP (Slides 1–3) -->
-<!-- ============================================================ -->
+<!-- ================================================================ -->
 
-  <div class="slide" data-index="1">
-    <div class="slide-inner">
-      <div class="slide-text">
-        <span class="section-badge">Section ① &nbsp;·&nbsp; Digital Divide &amp; Knowledge Gap</span>
-        <h1>The <span class="accent">Digital</span> Divide</h1>
-        <ul>
-          <li>Not everyone has <strong>equal access</strong> to the Internet</li>
-          <li>"The developed world has a <strong>great advantage</strong> over the developing world"</li>
-          <li>"Access is not <strong>even</strong>" — uniform access remains a distant goal</li>
-          <li>This gap affects <strong>education, jobs, and life opportunities</strong></li>
-        </ul>
-      </div>
-      <div class="slide-visual">
-        <svg viewBox="0 0 400 320" xmlns="http://www.w3.org/2000/svg">
-          <line x1="200" y1="38" x2="200" y2="288" stroke="#d4a853" stroke-width="1" stroke-dasharray="5 5" opacity="0.4"/>
-          <!-- Left: Developed -->
-          <rect x="10" y="42" width="178" height="235" rx="10" fill="#152238" stroke="#5baea0" stroke-width="1.2"/>
-          <text x="99" y="70" text-anchor="middle" fill="#5baea0" font-size="12" font-weight="600">Developed World</text>
-          <rect x="24" y="108" width="24" height="78" rx="2" fill="#1c3050" stroke="#5b8cbe" stroke-width="0.8"/>
-          <rect x="28" y="116" width="5" height="5" rx="1" fill="#d4a853" opacity="0.25"/><rect x="37" y="116" width="5" height="5" rx="1" fill="#d4a853" opacity="0.25"/>
-          <rect x="56" y="88" width="24" height="98" rx="2" fill="#1c3050" stroke="#5b8cbe" stroke-width="0.8"/>
-          <rect x="60" y="96" width="5" height="5" rx="1" fill="#d4a853" opacity="0.25"/><rect x="69" y="96" width="5" height="5" rx="1" fill="#d4a853" opacity="0.25"/>
-          <rect x="88" y="120" width="24" height="66" rx="2" fill="#1c3050" stroke="#5b8cbe" stroke-width="0.8"/>
-          <path d="M152 140 Q162 130 172 140" fill="none" stroke="#5baea0" stroke-width="1.5"/>
-          <path d="M147 148 Q162 134 177 148" fill="none" stroke="#5baea0" stroke-width="1.5"/>
-          <circle cx="162" cy="162" r="4" fill="#5baea0"/>
-          <text x="99" y="242" text-anchor="middle" fill="#b8a99a" font-size="9">5G · Smart cities</text>
-          <text x="99" y="258" text-anchor="middle" fill="#b8a99a" font-size="9">High-speed Internet</text>
-          <!-- Right: Developing -->
-          <rect x="212" y="42" width="178" height="235" rx="10" fill="#152238" stroke="#c4655c" stroke-width="1.2"/>
-          <text x="301" y="70" text-anchor="middle" fill="#c4655c" font-size="12" font-weight="600">Developing World</text>
-          <polygon points="236,160 256,132 276,160" fill="#1c3050" stroke="#b8a99a" stroke-width="0.8"/>
-          <rect x="241" y="160" width="30" height="28" fill="#1c3050" stroke="#b8a99a" stroke-width="0.8"/>
-          <rect x="282" y="156" width="24" height="32" fill="#1c3050" stroke="#b8a99a" stroke-width="0.8"/>
-          <polygon points="279,156 294,134 309,156" fill="#1c3050" stroke="#b8a99a" stroke-width="0.8"/>
-          <path d="M342 138 Q347 133 352 138" fill="none" stroke="#c4655c" stroke-width="1"/>
-          <circle cx="347" cy="150" r="2.5" fill="none" stroke="#c4655c" stroke-width="0.8"/>
-          <text x="301" y="228" text-anchor="middle" fill="#b8a99a" font-size="9">Limited connectivity</text>
-          <text x="301" y="246" text-anchor="middle" fill="#b8a99a" font-size="9">Slow or no Internet</text>
-          <text x="301" y="264" text-anchor="middle" fill="#b8a99a" font-size="9">Fewer opportunities</text>
-          <text x="200" y="308" text-anchor="middle" fill="#d4a853" font-size="9" font-style="italic">"Access is not even"</text>
-        </svg>
-      </div>
+<!-- SLIDE 1: The Digital Divide -->
+<section data-transition="slide">
+  <div class="badge">Section ① · Digital Divide &amp; Knowledge Gap</div>
+  <div class="row">
+    <div class="col-text">
+      <h1>The <span class="accent-red">Digital</span> Divide</h1>
+      <ul>
+        <li class="fragment">Not everyone has <strong>equal access</strong> to the Internet</li>
+        <li class="fragment">"The developed world has a <strong>great advantage</strong> over the developing world"</li>
+        <li class="fragment">"Access is not <strong>even</strong>" — uniform access remains a distant goal</li>
+        <li class="fragment">This gap affects <strong>education, jobs, and life opportunities</strong></li>
+      </ul>
+    </div>
+    <div class="col-visual">
+      <svg viewBox="0 0 420 340" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="gDev" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f0faf7"/><stop offset="100%" stop-color="#e8f5f1"/></linearGradient>
+          <linearGradient id="gUdev" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fef6f5"/><stop offset="100%" stop-color="#fef0ee"/></linearGradient>
+          <filter id="shadow1"><feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.08"/></filter>
+        </defs>
+        <!-- Divider -->
+        <line x1="210" y1="42" x2="210" y2="300" stroke="#c0392b" stroke-width="1.2" stroke-dasharray="6 4" opacity="0.35"/>
+
+        <!-- Left: Developed World -->
+        <rect x="10" y="42" width="190" height="248" rx="12" fill="url(#gDev)" stroke="#398564" stroke-width="1.4" filter="url(#shadow1)"/>
+        <text x="105" y="74" text-anchor="middle" fill="#398564" font-size="13" font-weight="700">Developed World</text>
+        <!-- City skyline -->
+        <rect x="30" y="110" width="26" height="84" rx="3" fill="#fff" stroke="#2c5f8a" stroke-width="1"/>
+        <rect x="35" y="118" width="6" height="6" rx="1" fill="#d4a853" opacity="0.35"/><rect x="45" y="118" width="6" height="6" rx="1" fill="#d4a853" opacity="0.35"/>
+        <rect x="35" y="130" width="6" height="6" rx="1" fill="#d4a853" opacity="0.35"/><rect x="45" y="130" width="6" height="6" rx="1" fill="#d4a853" opacity="0.35"/>
+        <rect x="35" y="142" width="6" height="6" rx="1" fill="#d4a853" opacity="0.35"/><rect x="45" y="142" width="6" height="6" rx="1" fill="#d4a853" opacity="0.35"/>
+        <rect x="64" y="88" width="26" height="106" rx="3" fill="#fff" stroke="#2c5f8a" stroke-width="1"/>
+        <rect x="69" y="96" width="6" height="6" rx="1" fill="#d4a853" opacity="0.35"/><rect x="79" y="96" width="6" height="6" rx="1" fill="#d4a853" opacity="0.35"/>
+        <rect x="69" y="108" width="6" height="6" rx="1" fill="#d4a853" opacity="0.35"/><rect x="79" y="108" width="6" height="6" rx="1" fill="#d4a853" opacity="0.35"/>
+        <rect x="98" y="120" width="26" height="74" rx="3" fill="#fff" stroke="#2c5f8a" stroke-width="1"/>
+        <!-- WiFi symbol -->
+        <path d="M160 150 Q172 138 184 150" fill="none" stroke="#398564" stroke-width="2" stroke-linecap="round"/>
+        <path d="M155 160 Q172 145 189 160" fill="none" stroke="#398564" stroke-width="2" stroke-linecap="round"/>
+        <path d="M150 170 Q172 152 194 170" fill="none" stroke="#398564" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="172" cy="182" r="5" fill="#398564"/>
+        <text x="105" y="260" text-anchor="middle" fill="#5c5c6e" font-size="10">5G · Smart cities · Fiber optic</text>
+
+        <!-- Right: Developing World -->
+        <rect x="220" y="42" width="190" height="248" rx="12" fill="url(#gUdev)" stroke="#c0392b" stroke-width="1.4" filter="url(#shadow1)"/>
+        <text x="315" y="74" text-anchor="middle" fill="#c0392b" font-size="13" font-weight="700">Developing World</text>
+        <!-- Rural scene -->
+        <polygon points="245,168 267,135 289,168" fill="#fff" stroke="#7f8c8d" stroke-width="1"/>
+        <rect x="252" y="168" width="30" height="30" fill="#fff" stroke="#7f8c8d" stroke-width="1"/>
+        <rect x="264" y="185" width="8" height="13" fill="#faf9f7" stroke="#7f8c8d" stroke-width="0.6"/>
+        <rect x="296" y="165" width="28" height="33" fill="#fff" stroke="#7f8c8d" stroke-width="1"/>
+        <polygon points="293,165 310,138 327,165" fill="#fff" stroke="#7f8c8d" stroke-width="1"/>
+        <rect x="304" y="178" width="8" height="10" fill="#faf9f7" stroke="#7f8c8d" stroke-width="0.6"/>
+        <!-- Weak signal -->
+        <path d="M348 150 Q354 143 360 150" fill="none" stroke="#c0392b" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M345 157 Q354 148 363 157" fill="none" stroke="#c0392b" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
+        <circle cx="354" cy="167" r="3" fill="none" stroke="#c0392b" stroke-width="1.2"/>
+        <text x="315" y="248" text-anchor="middle" fill="#5c5c6e" font-size="10">Limited · Slow · No fiber</text>
+        <text x="315" y="268" text-anchor="middle" fill="#c0392b" font-size="9">Fewer opportunities</text>
+
+        <!-- Bottom label -->
+        <text x="210" y="325" text-anchor="middle" fill="#c0392b" font-size="10" font-style="italic">"Access is not even"</text>
+      </svg>
     </div>
   </div>
+</section>
 
-  <!-- SLIDE 2: Ceiling vs No-Ceiling Model -->
-  <div class="slide" data-index="2">
-    <div class="slide-inner full" style="align-items:start;">
-      <div class="slide-text" style="text-align:center;max-width:1050px;">
-        <span class="section-badge">Section ① &nbsp;·&nbsp; Digital Divide &amp; Knowledge Gap</span>
-        <h1>Why the Gap <span class="accent">Grows</span>: Two Models</h1>
-        <svg viewBox="0 0 1000 290" xmlns="http://www.w3.org/2000/svg" style="max-width:1000px;margin-top:0.6rem;">
-          <!-- LEFT: Ceiling Model -->
-          <text x="250" y="18" text-anchor="middle" fill="#5baea0" font-size="12" font-weight="600">Ceiling Model — The Gap Eventually Closes</text>
-          <line x1="50" y1="40" x2="50" y2="255" stroke="#eee6d8" stroke-width="0.7" opacity="0.45"/>
-          <line x1="50" y1="255" x2="460" y2="255" stroke="#eee6d8" stroke-width="0.7" opacity="0.45"/>
-          <text x="28" y="148" text-anchor="middle" fill="#b8a99a" font-size="8" transform="rotate(-90,28,148)">Knowledge</text>
-          <text x="255" y="278" text-anchor="middle" fill="#b8a99a" font-size="8">Time →</text>
-          <!-- Ceiling dashed line -->
-          <line x1="70" y1="72" x2="450" y2="72" stroke="#d4a853" stroke-width="0.8" stroke-dasharray="6 4" opacity="0.55"/>
-          <text x="455" y="75" fill="#d4a853" font-size="8">Ceiling</text>
-          <!-- High-SES -->
-          <path d="M50 240 Q120 175 210 110 Q280 82 380 76 Q430 73 455 72" fill="none" stroke="#5baea0" stroke-width="2"/>
-          <!-- Low-SES -->
-          <path d="M50 245 Q140 218 240 178 Q340 128 420 88 Q450 78 455 75" fill="none" stroke="#c4655c" stroke-width="2"/>
-          <text x="440" y="62" fill="#5baea0" font-size="9">High-SES</text>
-          <text x="440" y="90" fill="#c4655c" font-size="9">Low-SES</text>
-          <!-- Gap annotations -->
-          <line x1="150" y1="196" x2="150" y2="165" stroke="#d4a853" stroke-width="0.6"/>
-          <text x="162" y="184" fill="#d4a853" font-size="7">Gap</text>
-          <line x1="410" y1="92" x2="410" y2="78" stroke="#5baea0" stroke-width="0.6"/>
-          <text x="418" y="89" fill="#5baea0" font-size="7">Gap→0</text>
-          <text x="255" y="295" text-anchor="middle" fill="#b8a99a" font-size="8">High-SES hits ceiling → Low-SES catches up</text>
-
-          <!-- RIGHT: No-Ceiling Model -->
-          <text x="750" y="18" text-anchor="middle" fill="#c4655c" font-size="12" font-weight="600">No-Ceiling Model — The Gap Keeps Widening</text>
-          <line x1="550" y1="40" x2="550" y2="255" stroke="#eee6d8" stroke-width="0.7" opacity="0.45"/>
-          <line x1="550" y1="255" x2="960" y2="255" stroke="#eee6d8" stroke-width="0.7" opacity="0.45"/>
-          <!-- High-SES -->
-          <path d="M550 240 Q620 180 690 115 Q760 70 860 38 Q920 22 955 16" fill="none" stroke="#5baea0" stroke-width="2"/>
-          <!-- Low-SES -->
-          <path d="M550 245 Q640 218 710 190 Q780 158 860 125 Q920 102 955 90" fill="none" stroke="#c4655c" stroke-width="2"/>
-          <text x="940" y="10" fill="#5baea0" font-size="9">High-SES</text>
-          <text x="940" y="95" fill="#c4655c" font-size="9">Low-SES</text>
-          <!-- Gap annotations -->
-          <line x1="680" y1="165" x2="680" y2="200" stroke="#d4a853" stroke-width="0.6"/>
-          <text x="692" y="186" fill="#d4a853" font-size="7">Gap</text>
-          <line x1="900" y1="70" x2="900" y2="42" stroke="#e8c97a" stroke-width="0.7"/>
-          <text x="908" y="60" fill="#e8c97a" font-size="7">Gap↑↑</text>
-          <text x="755" y="295" text-anchor="middle" fill="#b8a99a" font-size="8">No ceiling → High-SES keeps pulling ahead forever</text>
-        </svg>
-        <p style="color:var(--cream-dim);margin-top:0.6rem;font-size:0.88rem;max-width:850px;margin-inline:auto;line-height:1.5;">
-          <strong style="color:var(--cream);">Same media, different abilities → different outcomes.</strong>
-          In the digital age, with <strong style="color:var(--gold);">no natural ceiling on knowledge</strong>,
-          those with better skills and resources keep pulling further ahead — the gap may never close.
-        </p>
-      </div>
+<!-- SLIDE 2: Ceiling vs No-Ceiling Model -->
+<section data-transition="slide">
+  <div class="badge">Section ① · Digital Divide &amp; Knowledge Gap</div>
+  <h1 style="text-align:center;">Why the Gap <span class="accent-red">Grows</span>: Two Models</h1>
+  <div style="display:flex;gap:30px;align-items:start;margin-top:8px;">
+    <div style="flex:1;">
+      <svg viewBox="0 0 480 320" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="0" width="480" height="320" rx="10" fill="#f9fcfb" stroke="#e0ebe6" stroke-width="1"/>
+        <text x="240" y="22" text-anchor="middle" fill="#398564" font-size="12" font-weight="700">Ceiling Model — Gap Eventually Closes</text>
+        <line x1="50" y1="42" x2="50" y2="275" stroke="#1a1a28" stroke-width="1" opacity="0.4"/>
+        <line x1="50" y1="275" x2="450" y2="275" stroke="#1a1a28" stroke-width="1" opacity="0.4"/>
+        <text x="26" y="160" text-anchor="middle" fill="#5c5c6e" font-size="9" transform="rotate(-90,26,160)">Knowledge Level</text>
+        <text x="250" y="300" text-anchor="middle" fill="#5c5c6e" font-size="9">Time →</text>
+        <!-- Ceiling -->
+        <line x1="70" y1="80" x2="440" y2="80" stroke="#b8860b" stroke-width="1.2" stroke-dasharray="7 4" opacity="0.6"/>
+        <text x="446" y="83" fill="#b8860b" font-size="9" font-weight="600">Ceiling</text>
+        <!-- High-SES -->
+        <path d="M50 258 Q120 190 210 120 Q280 88 380 83 Q425 81 448 80" fill="none" stroke="#398564" stroke-width="2.4" stroke-linecap="round"/>
+        <!-- Low-SES -->
+        <path d="M50 262 Q140 235 240 195 Q340 148 420 105 Q442 93 448 88" fill="none" stroke="#c0392b" stroke-width="2.4" stroke-linecap="round"/>
+        <!-- Labels -->
+        <circle cx="420" cy="82" r="3" fill="#398564"/>
+        <text x="436" y="68" fill="#398564" font-size="10" font-weight="600">High-SES</text>
+        <text x="436" y="96" fill="#c0392b" font-size="10" font-weight="600">Low-SES</text>
+        <!-- Gap arrows -->
+        <line x1="160" y1="215" x2="160" y2="180" stroke="#b8860b" stroke-width="0.8"/>
+        <text x="172" y="200" fill="#b8860b" font-size="8">Gap</text>
+        <line x1="416" y1="102" x2="416" y2="85" stroke="#398564" stroke-width="0.8"/>
+        <text x="422" y="96" fill="#398564" font-size="7">→0</text>
+        <text x="250" y="312" text-anchor="middle" fill="#5c5c6e" font-size="8">High-SES hits ceiling → Low-SES catches up</text>
+      </svg>
+    </div>
+    <div style="flex:1;">
+      <svg viewBox="0 0 480 320" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="0" width="480" height="320" rx="10" fill="#fef9f8" stroke="#fcd9d5" stroke-width="1"/>
+        <text x="240" y="22" text-anchor="middle" fill="#c0392b" font-size="12" font-weight="700">No-Ceiling Model — Gap Keeps Widening</text>
+        <line x1="50" y1="42" x2="50" y2="275" stroke="#1a1a28" stroke-width="1" opacity="0.4"/>
+        <line x1="50" y1="275" x2="450" y2="275" stroke="#1a1a28" stroke-width="1" opacity="0.4"/>
+        <!-- High-SES -->
+        <path d="M50 258 Q120 190 210 110 Q290 65 370 37 Q410 25 450 20" fill="none" stroke="#398564" stroke-width="2.4" stroke-linecap="round"/>
+        <!-- Low-SES -->
+        <path d="M50 262 Q140 238 230 205 Q320 170 390 140 Q425 125 450 112" fill="none" stroke="#c0392b" stroke-width="2.4" stroke-linecap="round"/>
+        <!-- Labels -->
+        <circle cx="435" cy="22" r="3" fill="#398564"/>
+        <text x="448" y="14" fill="#398564" font-size="10" font-weight="600">High-SES</text>
+        <text x="448" y="115" fill="#c0392b" font-size="10" font-weight="600">Low-SES</text>
+        <!-- Gap arrows - widening -->
+        <line x1="170" y1="212" x2="170" y2="244" stroke="#b8860b" stroke-width="0.8"/>
+        <text x="182" y="232" fill="#b8860b" font-size="8">Gap</text>
+        <line x1="410" y1="80" x2="410" y2="42" stroke="#d4773a" stroke-width="1"/>
+        <text x="420" y="64" fill="#d4773a" font-size="8" font-weight="600">Gap↑↑</text>
+        <text x="250" y="300" text-anchor="middle" fill="#5c5c6e" font-size="9">Time →</text>
+        <text x="250" y="312" text-anchor="middle" fill="#5c5c6e" font-size="8">No ceiling → high-SES keeps pulling ahead forever</text>
+      </svg>
     </div>
   </div>
+  <p style="text-align:center;font-size:0.75em;color:var(--text-dim);margin-top:10px;">
+    <strong>Same media, different abilities → different outcomes.</strong>
+    In the digital age, with <strong style="color:var(--red);">no natural ceiling on knowledge</strong>, the gap may never close.
+  </p>
+</section>
 
-  <div class="slide" data-index="3">
-    <div class="slide-inner">
-      <div class="slide-text">
-        <span class="section-badge">Section ① &nbsp;·&nbsp; Digital Divide &amp; Knowledge Gap</span>
-        <h1>The <span class="accent">Consequences</span></h1>
-        <ul>
-          <li>Information inequality leads to <strong>opportunity inequality</strong></li>
-          <li>The digital divide <strong>deepens existing social and economic gaps</strong></li>
-          <li>Those already disadvantaged fall <strong>further behind</strong></li>
-          <li>"The developed world has a great advantage" — and the advantage <strong>compounds</strong> over time</li>
-        </ul>
-      </div>
-      <div class="slide-visual">
-        <svg viewBox="0 0 380 340" xmlns="http://www.w3.org/2000/svg">
-          <!-- Downward spiral / widening gap -->
-          <!-- Rich side expanding outward -->
-          <text x="70" y="40" text-anchor="middle" fill="#5baea0" font-size="11" font-weight="600">Advantaged</text>
-          <path d="M35 55 Q70 45 105 55" fill="none" stroke="#5baea0" stroke-width="1.5" opacity="0.8"/>
-          <path d="M20 95 Q70 75 120 95" fill="none" stroke="#5baea0" stroke-width="1.8" opacity="0.7"/>
-          <path d="M10 140 Q70 115 130 140" fill="none" stroke="#5baea0" stroke-width="2.2" opacity="0.6"/>
-          <text x="70" y="185" text-anchor="middle" fill="#5baea0" font-size="8">Better jobs</text>
-          <text x="70" y="198" text-anchor="middle" fill="#5baea0" font-size="8">More knowledge</text>
-          <text x="70" y="211" text-anchor="middle" fill="#5baea0" font-size="8">More opportunities</text>
+<!-- SLIDE 3: The Consequences -->
+<section data-transition="slide">
+  <div class="badge">Section ① · Digital Divide &amp; Knowledge Gap</div>
+  <div class="row">
+    <div class="col-text">
+      <h1>The <span class="accent-red">Consequences</span></h1>
+      <ul>
+        <li class="fragment">Information inequality leads to <strong>opportunity inequality</strong></li>
+        <li class="fragment">The digital divide <strong>deepens existing social and economic gaps</strong></li>
+        <li class="fragment">Those already disadvantaged fall <strong>further behind</strong></li>
+        <li class="fragment">The advantage <strong>compounds</strong> — inequality breeds more inequality</li>
+      </ul>
+    </div>
+    <div class="col-visual">
+      <svg viewBox="0 0 400 340" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="sh2"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.06"/></filter>
+        </defs>
+        <!-- Left: upward spiral -->
+        <rect x="15" y="30" width="175" height="280" rx="10" fill="#f0faf7" stroke="#d5ebe2" stroke-width="1.2" filter="url(#sh2)"/>
+        <text x="102" y="58" text-anchor="middle" fill="#398564" font-size="12" font-weight="700">Advantaged ↑</text>
+        <!-- Rising curves -->
+        <path d="M40 260 Q60 230 80 210 Q110 180 140 150 Q160 130 170 110" fill="none" stroke="#398564" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M50 260 Q70 240 90 225 Q120 200 150 175 Q165 160 175 145" fill="none" stroke="#5baea0" stroke-width="1.6" stroke-linecap="round"/>
+        <!-- Icons -->
+        <text x="102" y="100" text-anchor="middle" font-size="10" fill="#398564">💼 Better jobs</text>
+        <text x="102" y="122" text-anchor="middle" font-size="10" fill="#398564">📚 More knowledge</text>
+        <text x="102" y="144" text-anchor="middle" font-size="10" fill="#398564">🌐 More opportunities</text>
+        <text x="102" y="166" text-anchor="middle" font-size="10" fill="#398564">💬 Stronger voice</text>
 
-          <!-- Poor side shrinking -->
-          <text x="310" y="40" text-anchor="middle" fill="#c4655c" font-size="11" font-weight="600">Disadvantaged</text>
-          <path d="M345 55 Q310 45 275 55" fill="none" stroke="#c4655c" stroke-width="1.5" opacity="0.8"/>
-          <path d="M360 95 Q310 75 260 95" fill="none" stroke="#c4655c" stroke-width="1.8" opacity="0.7"/>
-          <path d="M370 140 Q310 115 250 140" fill="none" stroke="#c4655c" stroke-width="2.2" opacity="0.6"/>
-          <text x="310" y="185" text-anchor="middle" fill="#c4655c" font-size="8">Fewer jobs</text>
-          <text x="310" y="198" text-anchor="middle" fill="#c4655c" font-size="8">Less knowledge</text>
-          <text x="310" y="211" text-anchor="middle" fill="#c4655c" font-size="8">Fewer opportunities</text>
-
-          <!-- Central dividing arrow -->
-          <line x1="190" y1="55" x2="190" y2="250" stroke="#d4a853" stroke-width="1.5" stroke-dasharray="6 3" opacity="0.5"/>
-          <polygon points="190,255 184,244 196,244" fill="#d4a853" opacity="0.5"/>
-          <text x="190" y="275" text-anchor="middle" fill="#d4a853" font-size="9" font-style="italic">Gap widens over time</text>
-
-          <!-- Cycle icons -->
-          <text x="190" y="305" text-anchor="middle" fill="#b8a99a" font-size="8">🔄 The cycle reinforces itself — inequality breeds more inequality</text>
-        </svg>
-      </div>
+        <!-- Right: downward spiral -->
+        <rect x="210" y="30" width="175" height="280" rx="10" fill="#fef6f5" stroke="#fcd9d5" stroke-width="1.2" filter="url(#sh2)"/>
+        <text x="297" y="58" text-anchor="middle" fill="#c0392b" font-size="12" font-weight="700">Disadvantaged ↓</text>
+        <!-- Falling curves -->
+        <path d="M250 100 Q270 120 290 150 Q310 180 330 210 Q345 235 355 260" fill="none" stroke="#c0392b" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M255 120 Q275 145 295 175 Q310 200 325 220 Q340 245 350 265" fill="none" stroke="#e74c3c" stroke-width="1.6" stroke-linecap="round"/>
+        <!-- Icons -->
+        <text x="297" y="216" text-anchor="middle" font-size="10" fill="#c0392b">🚫 Fewer jobs</text>
+        <text x="297" y="238" text-anchor="middle" font-size="10" fill="#c0392b">📖 Less knowledge</text>
+        <text x="297" y="260" text-anchor="middle" font-size="10" fill="#c0392b">🔒 No voice</text>
+        <!-- Center arrow -->
+        <line x1="198" y1="140" x2="198" y2="270" stroke="#b8860b" stroke-width="1.5" stroke-dasharray="6 3" opacity="0.5"/>
+        <polygon points="198,276 192,266 204,266" fill="#b8860b" opacity="0.5"/>
+        <text x="198" y="290" text-anchor="middle" fill="#b8860b" font-size="9" font-style="italic">Gap widens</text>
+      </svg>
     </div>
   </div>
+</section>
 
-<!-- ============================================================ -->
+<!-- ================================================================ -->
 <!-- SECTION ②: VIOLENCE, PASSIVITY & ADDICTION (Slides 4–6) -->
-<!-- ============================================================ -->
+<!-- ================================================================ -->
 
-  <div class="slide" data-index="4">
-    <div class="slide-inner">
-      <div class="slide-text">
-        <span class="section-badge">Section ② &nbsp;·&nbsp; Violence, Passivity &amp; Addiction</span>
-        <h1>Media &amp;<br><span class="accent">Violence</span></h1>
-        <ul>
-          <li>Kids are <strong>"susceptible to the negative images they see"</strong></li>
-          <li>Repeated exposure to violent content leads to <strong>desensitization</strong></li>
-          <li>Children who watch violent media may internalize a worldview where <strong>violence feels normal</strong></li>
-          <li>Movies and games "may influence our world in <strong>ways we do not understand</strong>"</li>
-        </ul>
-      </div>
-      <div class="slide-visual">
-        <svg viewBox="0 0 380 340" xmlns="http://www.w3.org/2000/svg">
-          <!-- Flow diagram: Violent Content → Effects -->
-          <!-- Stage 1: Violent Content -->
-          <rect x="115" y="20" width="150" height="50" rx="10" fill="#1c3050" stroke="#c4655c" stroke-width="1.5"/>
-          <text x="190" y="42" text-anchor="middle" fill="#eee6d8" font-size="12" font-weight="600">Violent Content</text>
-          <text x="190" y="58" text-anchor="middle" fill="#b8a99a" font-size="8">TV · Movies · Games · Videos</text>
-          <!-- Arrow -->
-          <polygon points="190,80 180,72 200,72" fill="#c4655c" opacity="0.7"/>
-          <!-- Stage 2: Repeated Exposure -->
-          <rect x="115" y="90" width="150" height="50" rx="10" fill="#1c3050" stroke="#c4655c" stroke-width="1.2"/>
-          <text x="190" y="112" text-anchor="middle" fill="#eee6d8" font-size="11" font-weight="600">Repeated Exposure</text>
-          <text x="190" y="128" text-anchor="middle" fill="#b8a99a" font-size="8">Hours of viewing over months &amp; years</text>
-          <!-- Arrow -->
-          <polygon points="190,150 180,142 200,142" fill="#c4655c" opacity="0.7"/>
-          <!-- Stage 3: Effects -->
-          <rect x="70" y="160" width="240" height="80" rx="10" fill="#152238" stroke="#d4a853" stroke-width="1.2"/>
-          <text x="190" y="184" text-anchor="middle" fill="#eee6d8" font-size="11" font-weight="600">Psychological Effects</text>
-          <text x="190" y="202" text-anchor="middle" fill="#b8a99a" font-size="9">Desensitization → Less empathy</text>
-          <text x="190" y="218" text-anchor="middle" fill="#b8a99a" font-size="9">Aggression → More likely to act violently</text>
-          <text x="190" y="234" text-anchor="middle" fill="#b8a99a" font-size="9">Normalization → Violence seems acceptable</text>
-          <!-- Bottom quote -->
-          <text x="190" y="280" text-anchor="middle" fill="#c4655c" font-size="9" font-style="italic">"Parents should be more conscious of what their children watch"</text>
-          <text x="190" y="300" text-anchor="middle" fill="#b8a99a" font-size="8">— Chapter 6 Lecture, Conversation One</text>
-        </svg>
-      </div>
+<!-- SLIDE 4: Media & Violence -->
+<section data-transition="slide">
+  <div class="badge">Section ② · Violence, Passivity &amp; Addiction</div>
+  <div class="row">
+    <div class="col-text">
+      <h1>Media &amp;<br><span class="accent-red">Violence</span></h1>
+      <ul>
+        <li class="fragment">Kids are <strong>"susceptible to the negative images they see"</strong></li>
+        <li class="fragment">Repeated exposure leads to <strong>desensitization</strong></li>
+        <li class="fragment">Children may internalize a worldview where <strong>violence feels normal</strong></li>
+        <li class="fragment">Movies &amp; games "may influence our world in <strong>ways we do not understand</strong>"</li>
+      </ul>
+    </div>
+    <div class="col-visual">
+      <svg viewBox="0 0 400 350" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="sh3"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.05"/></filter>
+          <linearGradient id="gradRed" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fef6f5"/><stop offset="100%" stop-color="#fef0ee"/></linearGradient>
+        </defs>
+        <rect x="0" y="0" width="400" height="350" rx="12" fill="url(#gradRed)" stroke="#fcd9d5" stroke-width="1" filter="url(#sh3)"/>
+
+        <!-- Stage 1 -->
+        <rect x="100" y="18" width="200" height="50" rx="10" fill="#fff" stroke="#c0392b" stroke-width="1.5"/>
+        <text x="200" y="40" text-anchor="middle" fill="#c0392b" font-size="12" font-weight="700">🎬 Violent Content</text>
+        <text x="200" y="56" text-anchor="middle" fill="#5c5c6e" font-size="8">TV · Movies · Games · Online Videos</text>
+        <!-- Arrow down -->
+        <polygon points="200,78 190,70 210,70" fill="#c0392b" opacity="0.55"/>
+
+        <!-- Stage 2 -->
+        <rect x="100" y="90" width="200" height="50" rx="10" fill="#fff" stroke="#d4773a" stroke-width="1.3"/>
+        <text x="200" y="112" text-anchor="middle" fill="#d4773a" font-size="12" font-weight="700">🔄 Repeated Exposure</text>
+        <text x="200" y="128" text-anchor="middle" fill="#5c5c6e" font-size="8">Hours over months and years</text>
+        <!-- Arrow down -->
+        <polygon points="200,150 190,142 210,142" fill="#d4773a" opacity="0.55"/>
+
+        <!-- Stage 3: Effects -->
+        <rect x="55" y="162" width="290" height="110" rx="12" fill="#fff" stroke="#c0392b" stroke-width="1.5"/>
+        <text x="200" y="186" text-anchor="middle" fill="#c0392b" font-size="13" font-weight="700">⚠ Psychological Effects</text>
+        <line x1="90" y1="196" x2="310" y2="196" stroke="#e8e5df" stroke-width="0.8"/>
+        <text x="200" y="216" text-anchor="middle" fill="#5c5c6e" font-size="10">🧠 Desensitization → Less empathy for victims</text>
+        <text x="200" y="236" text-anchor="middle" fill="#5c5c6e" font-size="10">👊 Aggression → More likely to act violently</text>
+        <text x="200" y="256" text-anchor="middle" fill="#5c5c6e" font-size="10">👁️ Normalization → Violence seems acceptable</text>
+
+        <!-- Quote -->
+        <text x="200" y="310" text-anchor="middle" fill="#c0392b" font-size="9" font-style="italic">"Parents should be more conscious of what their children watch"</text>
+        <text x="200" y="330" text-anchor="middle" fill="#5c5c6e" font-size="7">— Chapter 6 Lecture, Conversation One</text>
+      </svg>
     </div>
   </div>
+</section>
 
-  <div class="slide" data-index="5">
-    <div class="slide-inner">
-      <div class="slide-text">
-        <span class="section-badge">Section ② &nbsp;·&nbsp; Violence, Passivity &amp; Addiction</span>
-        <h1>Passivity &amp;<br><span class="accent">Addiction</span></h1>
-        <ul>
-          <li><strong>Passivity</strong>: TV and endless content turn us into observers, not participants</li>
-          <li>"They say it makes people too <strong>passive</strong>" — replacing real activities with screen time</li>
-          <li><strong>Addiction</strong>: "How long have I been wandering around cyberspace?" — <strong>at least two hours</strong></li>
-          <li>Media can be <strong>highly addictive</strong> — platforms are engineered to keep you scrolling</li>
-        </ul>
-      </div>
-      <div class="slide-visual">
-        <svg viewBox="0 0 380 340" xmlns="http://www.w3.org/2000/svg">
-          <!-- Two columns -->
-          <!-- Left: Passivity -->
-          <rect x="10" y="25" width="175" height="290" rx="10" fill="#152238" stroke="#b8a99a" stroke-width="1.2"/>
-          <circle cx="97" cy="60" r="22" fill="#1c3050" stroke="#b8a99a" stroke-width="1.2"/>
-          <text x="97" y="57" text-anchor="middle" font-size="18">🛋️</text>
-          <text x="97" y="98" text-anchor="middle" fill="#eee6d8" font-size="12" font-weight="600">Passivity</text>
-          <line x1="40" y1="112" x2="155" y2="112" stroke="#b8a99a" stroke-width="0.4" opacity="0.3"/>
-          <text x="97" y="134" text-anchor="middle" fill="#b8a99a" font-size="9">Instead of playing → watch others play</text>
-          <text x="97" y="152" text-anchor="middle" fill="#b8a99a" font-size="9">Instead of talking → watch talk shows</text>
-          <text x="97" y="170" text-anchor="middle" fill="#b8a99a" font-size="9">Instead of doing → scroll passively</text>
-          <polygon points="97,186 87,194 107,194" fill="#b8a99a" opacity="0.5"/>
-          <rect x="72" y="196" width="50" height="20" rx="5" fill="#b8a99a" opacity="0.15"/>
-          <text x="97" y="210" text-anchor="middle" fill="#b8a99a" font-size="8">Disengagement</text>
-          <!-- Right: Addiction -->
-          <rect x="195" y="25" width="175" height="290" rx="10" fill="#152238" stroke="#d4a853" stroke-width="1.2"/>
-          <circle cx="282" cy="60" r="22" fill="#1c3050" stroke="#d4a853" stroke-width="1.2"/>
-          <text x="282" y="57" text-anchor="middle" font-size="18">📱</text>
-          <text x="282" y="98" text-anchor="middle" fill="#eee6d8" font-size="12" font-weight="600">Addiction</text>
-          <line x1="225" y1="112" x2="340" y2="112" stroke="#d4a853" stroke-width="0.4" opacity="0.3"/>
-          <text x="282" y="134" text-anchor="middle" fill="#b8a99a" font-size="9">"Just one more video"</text>
-          <text x="282" y="152" text-anchor="middle" fill="#b8a99a" font-size="9">Endless feeds, no stopping cue</text>
-          <text x="282" y="170" text-anchor="middle" fill="#b8a99a" font-size="9">Dopamine loops → keep scrolling</text>
-          <polygon points="282,186 272,194 292,194" fill="#d4a853" opacity="0.5"/>
-          <rect x="252" y="196" width="60" height="20" rx="5" fill="#d4a853" opacity="0.15"/>
-          <text x="282" y="210" text-anchor="middle" fill="#d4a853" font-size="8">Time Vanishes</text>
-          <!-- Bottom shared area -->
-          <text x="190" y="280" text-anchor="middle" fill="#b8a99a" font-size="9" font-style="italic">Both lead to the same outcome:</text>
-          <text x="190" y="298" text-anchor="middle" fill="#eee6d8" font-size="10" font-weight="500">Less real-life engagement, more screen dependence</text>
-        </svg>
-      </div>
+<!-- SLIDE 5: Passivity & Addiction -->
+<section data-transition="slide">
+  <div class="badge">Section ② · Violence, Passivity &amp; Addiction</div>
+  <div class="row">
+    <div class="col-text">
+      <h1>Passivity &amp;<br><span class="accent-red">Addiction</span></h1>
+      <ul>
+        <li class="fragment"><strong>Passivity</strong>: TV turns us into observers, not participants</li>
+        <li class="fragment">"They say it makes people too <strong>passive</strong>" — real activities replaced by screens</li>
+        <li class="fragment"><strong>Addiction</strong>: "How long have I been <strong>wandering around cyberspace</strong>?"</li>
+        <li class="fragment">Platforms are <strong>engineered</strong> to keep you scrolling — the addiction is a business model</li>
+      </ul>
+    </div>
+    <div class="col-visual">
+      <svg viewBox="0 0 420 340" xmlns="http://www.w3.org/2000/svg">
+        <!-- Left card: Passivity -->
+        <rect x="10" y="16" width="195" height="310" rx="12" fill="#faf9f7" stroke="#c4bdb5" stroke-width="1.2"/>
+        <rect x="10" y="16" width="195" height="42" rx="12" fill="#f0eeea"/>
+        <circle cx="42" cy="37" r="16" fill="#fff" stroke="#7f8c8d" stroke-width="1.2"/>
+        <text x="42" y="34" text-anchor="middle" font-size="13">🛋️</text>
+        <text x="72" y="34" fill="#1a1a28" font-size="12" font-weight="700">Passivity</text>
+        <text x="72" y="48" fill="#7f8c8d" font-size="8">Disengagement from reality</text>
+        <line x1="35" y1="72" x2="180" y2="72" stroke="#e8e5df" stroke-width="0.8"/>
+        <text x="107" y="100" text-anchor="middle" fill="#5c5c6e" font-size="10">❌ Instead of playing</text>
+        <text x="107" y="120" text-anchor="middle" fill="#5c5c6e" font-size="10">→ Watch others play</text>
+        <text x="107" y="148" text-anchor="middle" fill="#5c5c6e" font-size="10">❌ Instead of talking</text>
+        <text x="107" y="168" text-anchor="middle" fill="#5c5c6e" font-size="10">→ Watch talk shows</text>
+        <text x="107" y="196" text-anchor="middle" fill="#5c5c6e" font-size="10">❌ Instead of doing</text>
+        <text x="107" y="216" text-anchor="middle" fill="#5c5c6e" font-size="10">→ Scroll passively</text>
+        <polygon points="107,236 97,244 117,244" fill="#7f8c8d" opacity="0.45"/>
+        <rect x="72" y="248" width="70" height="26" rx="13" fill="#f0eeea"/>
+        <text x="107" y="266" text-anchor="middle" fill="#7f8c8d" font-size="9" font-weight="600">Disengagement</text>
+        <text x="107" y="300" text-anchor="middle" fill="#5c5c6e" font-size="9" font-style="italic">"Makes people too passive"</text>
+
+        <!-- Right card: Addiction -->
+        <rect x="215" y="16" width="195" height="310" rx="12" fill="#fef9f6" stroke="#fcd5ba" stroke-width="1.2"/>
+        <rect x="215" y="16" width="195" height="42" rx="12" fill="#fdf2e9"/>
+        <circle cx="247" cy="37" r="16" fill="#fff" stroke="#d4773a" stroke-width="1.2"/>
+        <text x="247" y="34" text-anchor="middle" font-size="13">📱</text>
+        <text x="277" y="34" fill="#1a1a28" font-size="12" font-weight="700">Addiction</text>
+        <text x="277" y="48" fill="#d4773a" font-size="8">Loss of self-control</text>
+        <line x1="240" y1="72" x2="385" y2="72" stroke="#e8e5df" stroke-width="0.8"/>
+        <text x="312" y="100" text-anchor="middle" fill="#5c5c6e" font-size="10">🔄 "Just one more video"</text>
+        <text x="312" y="128" text-anchor="middle" fill="#5c5c6e" font-size="10">⏱️ No stopping cue</text>
+        <text x="312" y="156" text-anchor="middle" fill="#5c5c6e" font-size="10">🧪 Dopamine feedback loops</text>
+        <text x="312" y="184" text-anchor="middle" fill="#5c5c6e" font-size="10">📉 Diminishing returns</text>
+        <text x="312" y="212" text-anchor="middle" fill="#5c5c6e" font-size="10">😰 Anxiety when offline</text>
+        <polygon points="312,236 302,244 322,244" fill="#d4773a" opacity="0.45"/>
+        <rect x="272" y="248" width="80" height="26" rx="13" fill="#fdf2e9"/>
+        <text x="312" y="266" text-anchor="middle" fill="#d4773a" font-size="9" font-weight="600">Time Vanishes</text>
+        <text x="312" y="300" text-anchor="middle" fill="#5c5c6e" font-size="9" font-style="italic">"Wandering around cyberspace"</text>
+      </svg>
     </div>
   </div>
+</section>
 
-  <div class="slide" data-index="6">
-    <div class="slide-inner">
-      <div class="slide-text">
-        <span class="section-badge">Section ② &nbsp;·&nbsp; Violence, Passivity &amp; Addiction</span>
-        <h1><span class="accent">Wasting</span> Time</h1>
-        <ul>
-          <li>Phone apps "may cause us to <strong>waste time</strong>" — a core criticism in our textbook</li>
-          <li>Social media platforms are <strong>designed to maximize engagement</strong>, not well-being</li>
-          <li>Americans spend up to <strong>8 hours a day online</strong> — that's half of waking hours</li>
-          <li>"You shouldn't spend so much time connected to your <strong>electronic devices</strong>"</li>
-        </ul>
-      </div>
-      <div class="slide-visual">
-        <svg viewBox="0 0 380 350" xmlns="http://www.w3.org/2000/svg">
-          <!-- 24-hour clock visualization -->
-          <circle cx="190" cy="175" r="110" fill="#152238" stroke="#eee6d8" stroke-width="0.8" opacity="0.4"/>
-          <!-- Sleep segment -->
-          <path d="M190 175 L190 65 A110 110 0 0 1 300 175 Z" fill="#5b8cbe" opacity="0.15"/>
-          <text x="260" y="120" fill="#5b8cbe" font-size="8">Sleep ~8h</text>
-          <!-- Work/school -->
-          <path d="M190 175 L300 175 A110 110 0 0 1 190 285 Z" fill="#5baea0" opacity="0.15"/>
-          <text x="260" y="230" fill="#5baea0" font-size="8">Work/School ~8h</text>
-          <!-- Media time - LARGE -->
-          <path d="M190 175 L190 285 A110 110 0 0 1 190 65 Z" fill="#c4655c" opacity="0.2"/>
-          <text x="120" y="180" text-anchor="middle" fill="#c4655c" font-size="11" font-weight="600">Media</text>
-          <text x="120" y="196" text-anchor="middle" fill="#c4655c" font-size="10" font-weight="600">~8h/day</text>
-          <text x="120" y="212" text-anchor="middle" fill="#b8a99a" font-size="8">Half of waking hours!</text>
-          <!-- Center -->
-          <circle cx="190" cy="175" r="30" fill="#0b1622" stroke="#c4655c" stroke-width="1.2"/>
-          <text x="190" y="172" text-anchor="middle" fill="#c4655c" font-size="18">⏰</text>
-          <!-- Labels -->
-          <text x="190" y="320" text-anchor="middle" fill="#b8a99a" font-size="9" font-style="italic">"Is this a good use of time?"</text>
-          <text x="190" y="338" text-anchor="middle" fill="#eee6d8" font-size="10" font-weight="500">What could we do with those 8 hours instead?</text>
-        </svg>
-      </div>
+<!-- SLIDE 6: Wasting Time -->
+<section data-transition="slide">
+  <div class="badge">Section ② · Violence, Passivity &amp; Addiction</div>
+  <div class="row">
+    <div class="col-text">
+      <h1><span class="accent-red">Wasting</span> Time</h1>
+      <ul>
+        <li class="fragment">Phone apps <strong>"may cause us to waste time"</strong> — a core chapter criticism</li>
+        <li class="fragment">Social media platforms are <strong>designed to maximize engagement</strong>, not well-being</li>
+        <li class="fragment">Some people spend up to <strong>8 hours a day online</strong> — half of waking hours</li>
+        <li class="fragment">"You shouldn't spend so much time connected to <strong>electronic devices</strong>"</li>
+      </ul>
+    </div>
+    <div class="col-visual">
+      <svg viewBox="0 0 420 360" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="sh4"><feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#000" flood-opacity="0.06"/></filter>
+        </defs>
+        <!-- 24h clock -->
+        <circle cx="210" cy="175" r="145" fill="#fff" stroke="#e8e5df" stroke-width="2" filter="url(#sh4)"/>
+        <circle cx="210" cy="175" r="130" fill="none" stroke="#f0eeea" stroke-width="1"/>
+
+        <!-- Sleep 8h -->
+        <path d="M210 175 L210 45 A130 130 0 0 1 340 175 Z" fill="#2c5f8a" opacity="0.12"/>
+        <text x="290" y="105" fill="#2c5f8a" font-size="10" font-weight="600">Sleep</text>
+        <text x="290" y="120" fill="#2c5f8a" font-size="9">~8h</text>
+        <!-- Work 8h -->
+        <path d="M210 175 L340 175 A130 130 0 0 1 210 305 Z" fill="#398564" opacity="0.12"/>
+        <text x="290" y="250" fill="#398564" font-size="10" font-weight="600">Work/</text>
+        <text x="290" y="264" fill="#398564" font-size="10" font-weight="600">School</text>
+        <text x="290" y="280" fill="#398564" font-size="9">~8h</text>
+        <!-- Media 8h — THE BIG ONE -->
+        <path d="M210 175 L210 305 A130 130 0 0 1 210 45 Z" fill="#c0392b" opacity="0.22"/>
+        <text x="130" y="165" text-anchor="middle" fill="#c0392b" font-size="14" font-weight="700">MEDIA</text>
+        <text x="130" y="185" text-anchor="middle" fill="#c0392b" font-size="12" font-weight="600">~8h/day!</text>
+        <text x="130" y="205" text-anchor="middle" fill="#5c5c6e" font-size="9">Half of waking hours</text>
+
+        <!-- Center -->
+        <circle cx="210" cy="175" r="38" fill="#fff" stroke="#c0392b" stroke-width="2"/>
+        <text x="210" y="172" text-anchor="middle" font-size="22">⏰</text>
+        <!-- Radial label lines -->
+        <line x1="210" y1="137" x2="210" y2="120" stroke="#c0392b" stroke-width="0.6" opacity="0.4"/>
+        <line x1="210" y1="213" x2="210" y2="230" stroke="#c0392b" stroke-width="0.6" opacity="0.4"/>
+
+        <text x="210" y="345" text-anchor="middle" fill="#5c5c6e" font-size="10" font-style="italic">"Is this a good use of time?"</text>
+      </svg>
     </div>
   </div>
+</section>
 
-<!-- ============================================================ -->
+<!-- ================================================================ -->
 <!-- SECTION ③: PRIVACY, DATA & FILTER BUBBLES (Slides 7–9) -->
-<!-- ============================================================ -->
+<!-- ================================================================ -->
 
-  <div class="slide" data-index="7">
-    <div class="slide-inner">
-      <div class="slide-text">
-        <span class="section-badge">Section ③ &nbsp;·&nbsp; Privacy, Data &amp; Filter Bubbles</span>
-        <h1><span class="accent">Privacy</span> Invasion</h1>
-        <ul>
-          <li>"TV <strong>invades our privacy</strong>" — but digital media invades it far more deeply</li>
-          <li>Every click, search, and scroll is <strong>tracked, recorded, and stored</strong></li>
-          <li>Personal data becomes a <strong>commodity</strong> — bought and sold without our knowledge</li>
-          <li>Most users don't realize the <strong>extent</strong> of what is being collected about them</li>
-        </ul>
-      </div>
-      <div class="slide-visual">
-        <svg viewBox="0 0 380 340" xmlns="http://www.w3.org/2000/svg">
-          <!-- Person at center -->
-          <circle cx="190" cy="160" r="22" fill="#1c3050" stroke="#d4a853" stroke-width="1.3"/>
-          <text x="190" y="164" text-anchor="middle" font-size="15">👤</text>
-          <text x="190" y="195" text-anchor="middle" fill="#b8a99a" font-size="8">You</text>
-          <!-- Data collection entities surrounding -->
-          <rect x="50" y="35" width="85" height="42" rx="8" fill="#1c3050" stroke="#c4655c" stroke-width="1"/>
-          <text x="92" y="53" text-anchor="middle" fill="#eee6d8" font-size="8">Social Platforms</text>
-          <text x="92" y="67" text-anchor="middle" fill="#c4655c" font-size="7">Posts · Likes · Messages</text>
-          <rect x="245" y="35" width="85" height="42" rx="8" fill="#1c3050" stroke="#c4655c" stroke-width="1"/>
-          <text x="287" y="53" text-anchor="middle" fill="#eee6d8" font-size="8">Search Engines</text>
-          <text x="287" y="67" text-anchor="middle" fill="#c4655c" font-size="7">Queries · History</text>
-          <rect x="50" y="260" width="85" height="42" rx="8" fill="#1c3050" stroke="#c4655c" stroke-width="1"/>
-          <text x="92" y="278" text-anchor="middle" fill="#eee6d8" font-size="8">Advertisers</text>
-          <text x="92" y="292" text-anchor="middle" fill="#c4655c" font-size="7">Targeting profiles</text>
-          <rect x="245" y="260" width="85" height="42" rx="8" fill="#1c3050" stroke="#c4655c" stroke-width="1"/>
-          <text x="287" y="278" text-anchor="middle" fill="#eee6d8" font-size="8">Data Brokers</text>
-          <text x="287" y="292" text-anchor="middle" fill="#c4655c" font-size="7">Sell your profile</text>
-          <!-- Data flow lines -->
-          <g stroke="#c4655c" stroke-width="0.7" opacity="0.35">
-            <line x1="105" y1="77" x2="175" y2="145"/>
-            <line x1="275" y1="77" x2="205" y2="145"/>
-            <line x1="105" y1="260" x2="172" y2="182"/>
-            <line x1="275" y1="260" x2="208" y2="182"/>
-          </g>
-          <!-- Data icons -->
-          <text x="125" y="100" text-anchor="middle" font-size="12" opacity="0.6">📍</text>
-          <text x="255" y="100" text-anchor="middle" font-size="12" opacity="0.6">🔍</text>
-          <text x="125" y="235" text-anchor="middle" font-size="12" opacity="0.6">💳</text>
-          <text x="255" y="235" text-anchor="middle" font-size="12" opacity="0.6">📊</text>
-          <text x="190" y="310" text-anchor="middle" fill="#b8a99a" font-size="9" font-style="italic">Your data is the product — and you're not the customer</text>
-        </svg>
-      </div>
+<!-- SLIDE 7: Privacy Invasion -->
+<section data-transition="slide">
+  <div class="badge">Section ③ · Privacy, Data &amp; Filter Bubbles</div>
+  <div class="row">
+    <div class="col-text">
+      <h1><span class="accent-red">Privacy</span> Invasion</h1>
+      <ul>
+        <li class="fragment">"TV <strong>invades our privacy</strong>" — but digital media invades far more deeply</li>
+        <li class="fragment">Every click, search, and scroll is <strong>tracked, recorded, and stored</strong></li>
+        <li class="fragment">Personal data becomes a <strong>commodity</strong> — bought and sold without consent</li>
+        <li class="fragment">Most users don't realize the <strong>extent</strong> of what's being collected</li>
+      </ul>
+    </div>
+    <div class="col-visual">
+      <svg viewBox="0 0 400 350" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="sh5"><feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.05"/></filter>
+        </defs>
+        <!-- Central person -->
+        <circle cx="200" cy="165" r="30" fill="#fff" stroke="#c0392b" stroke-width="2" filter="url(#sh5)"/>
+        <text x="200" y="162" text-anchor="middle" font-size="24">👤</text>
+        <text x="200" y="208" text-anchor="middle" fill="#5c5c6e" font-size="10" font-weight="600">YOU</text>
+
+        <!-- Data collection entities -->
+        <!-- Top-left: Social -->
+        <rect x="20" y="20" width="110" height="55" rx="10" fill="#fff" stroke="#c0392b" stroke-width="1.2" filter="url(#sh5)"/>
+        <text x="75" y="42" text-anchor="middle" fill="#c0392b" font-size="10" font-weight="700">📱 Social Platforms</text>
+        <text x="75" y="60" text-anchor="middle" fill="#5c5c6e" font-size="7">Posts · Likes · Messages</text>
+        <!-- Top-right: Search -->
+        <rect x="270" y="20" width="110" height="55" rx="10" fill="#fff" stroke="#c0392b" stroke-width="1.2" filter="url(#sh5)"/>
+        <text x="325" y="42" text-anchor="middle" fill="#c0392b" font-size="10" font-weight="700">🔍 Search Engines</text>
+        <text x="325" y="60" text-anchor="middle" fill="#5c5c6e" font-size="7">Queries · Browsing history</text>
+        <!-- Bottom-left: Advertisers -->
+        <rect x="20" y="270" width="110" height="55" rx="10" fill="#fff" stroke="#c0392b" stroke-width="1.2" filter="url(#sh5)"/>
+        <text x="75" y="292" text-anchor="middle" fill="#c0392b" font-size="10" font-weight="700">📊 Advertisers</text>
+        <text x="75" y="310" text-anchor="middle" fill="#5c5c6e" font-size="7">Targeting profiles</text>
+        <!-- Bottom-right: Brokers -->
+        <rect x="270" y="270" width="110" height="55" rx="10" fill="#fff" stroke="#c0392b" stroke-width="1.2" filter="url(#sh5)"/>
+        <text x="325" y="292" text-anchor="middle" fill="#c0392b" font-size="10" font-weight="700">💰 Data Brokers</text>
+        <text x="325" y="310" text-anchor="middle" fill="#5c5c6e" font-size="7">Sell your profile</text>
+
+        <!-- Data flow lines -->
+        <g stroke="#e74c3c" stroke-width="1.2" opacity="0.3" stroke-dasharray="4 3">
+          <line x1="85" y1="75" x2="175" y2="148"/>
+          <line x1="310" y1="75" x2="225" y2="148"/>
+          <line x1="85" y1="270" x2="174" y2="190"/>
+          <line x1="310" y1="270" x2="226" y2="190"/>
+        </g>
+        <!-- Data icons floating -->
+        <text x="130" y="100" font-size="11" opacity="0.4">📍</text>
+        <text x="265" y="100" font-size="11" opacity="0.4">🔗</text>
+        <text x="130" y="240" font-size="11" opacity="0.4">💳</text>
+        <text x="265" y="240" font-size="11" opacity="0.4">📋</text>
+        <!-- Bottom -->
+        <text x="200" y="340" text-anchor="middle" fill="#c0392b" font-size="9" font-style="italic">Your data is the product — you are not the customer</text>
+      </svg>
     </div>
   </div>
+</section>
 
-  <div class="slide" data-index="8">
-    <div class="slide-inner">
-      <div class="slide-text">
-        <span class="section-badge">Section ③ &nbsp;·&nbsp; Privacy, Data &amp; Filter Bubbles</span>
-        <h1><span class="accent">Filter Bubbles</span><br>&amp; Echo Chambers</h1>
-        <ul>
-          <li><strong>Filter bubbles</strong>: algorithms show us only what we already agree with</li>
-          <li><strong>Echo chambers</strong>: our existing beliefs get reinforced, not challenged</li>
-          <li>The textbook warns that media <strong>"encourages people to think alike"</strong></li>
-          <li>Result: a <strong>skewed impression of the world</strong> — biased, inaccurate</li>
-        </ul>
-      </div>
-      <div class="slide-visual">
-        <svg viewBox="0 0 380 340" xmlns="http://www.w3.org/2000/svg">
-          <!-- Person in a bubble -->
-          <circle cx="190" cy="175" r="100" fill="none" stroke="#9b8ec4" stroke-width="1.5" stroke-dasharray="8 4" opacity="0.5"/>
-          <circle cx="190" cy="140" r="16" fill="#1c3050" stroke="#d4a853" stroke-width="1.2"/>
-          <text x="190" y="144" text-anchor="middle" font-size="12">👤</text>
-          <!-- Content inside bubble (all same) -->
-          <rect x="130" y="175" width="28" height="18" rx="3" fill="#9b8ec4" opacity="0.15" stroke="#9b8ec4" stroke-width="0.6"/>
-          <text x="144" y="188" text-anchor="middle" fill="#9b8ec4" font-size="6">✓ Agree</text>
-          <rect x="162" y="175" width="28" height="18" rx="3" fill="#9b8ec4" opacity="0.15" stroke="#9b8ec4" stroke-width="0.6"/>
-          <text x="176" y="188" text-anchor="middle" fill="#9b8ec4" font-size="6">✓ Agree</text>
-          <rect x="194" y="175" width="28" height="18" rx="3" fill="#9b8ec4" opacity="0.15" stroke="#9b8ec4" stroke-width="0.6"/>
-          <text x="208" y="188" text-anchor="middle" fill="#9b8ec4" font-size="6">✓ Agree</text>
-          <rect x="130" y="198" width="28" height="18" rx="3" fill="#9b8ec4" opacity="0.15" stroke="#9b8ec4" stroke-width="0.6"/>
-          <rect x="162" y="198" width="28" height="18" rx="3" fill="#9b8ec4" opacity="0.15" stroke="#9b8ec4" stroke-width="0.6"/>
-          <rect x="194" y="198" width="28" height="18" rx="3" fill="#9b8ec4" opacity="0.15" stroke="#9b8ec4" stroke-width="0.6"/>
-          <rect x="226" y="175" width="28" height="18" rx="3" fill="#9b8ec4" opacity="0.15" stroke="#9b8ec4" stroke-width="0.6"/>
-          <rect x="226" y="198" width="28" height="18" rx="3" fill="#9b8ec4" opacity="0.15" stroke="#9b8ec4" stroke-width="0.6"/>
-          <rect x="130" y="221" width="124" height="18" rx="3" fill="#9b8ec4" opacity="0.15" stroke="#9b8ec4" stroke-width="0.6"/>
-          <!-- Content outside bubble (different) — blocked -->
-          <text x="300" y="130" text-anchor="middle" fill="#b8a99a" font-size="8" opacity="0.4">✗ Different</text>
-          <text x="300" y="148" text-anchor="middle" fill="#b8a99a" font-size="8" opacity="0.4">view (blocked)</text>
-          <text x="80" y="130" text-anchor="middle" fill="#b8a99a" font-size="8" opacity="0.4">✗ Different</text>
-          <text x="80" y="148" text-anchor="middle" fill="#b8a99a" font-size="8" opacity="0.4">view (blocked)</text>
-          <!-- Labels -->
-          <text x="190" y="285" text-anchor="middle" fill="#9b8ec4" font-size="10" font-style="italic">"Encourages people to think alike"</text>
-          <text x="190" y="305" text-anchor="middle" fill="#b8a99a" font-size="8">Never exposed to challenging ideas → worldview narrows</text>
-        </svg>
-      </div>
+<!-- SLIDE 8: Filter Bubbles & Echo Chambers -->
+<section data-transition="slide">
+  <div class="badge">Section ③ · Privacy, Data &amp; Filter Bubbles</div>
+  <div class="row">
+    <div class="col-text">
+      <h1><span class="accent-red">Filter Bubbles</span><br>&amp; Echo Chambers</h1>
+      <ul>
+        <li class="fragment"><strong>Filter bubbles</strong>: algorithms show only what we already agree with</li>
+        <li class="fragment"><strong>Echo chambers</strong>: beliefs get reinforced, never challenged</li>
+        <li class="fragment">The textbook warns media <strong>"encourages people to think alike"</strong></li>
+        <li class="fragment">Result: a <strong>"skewed impression of the world"</strong> — biased and inaccurate</li>
+      </ul>
+    </div>
+    <div class="col-visual">
+      <svg viewBox="0 0 400 350" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="sh6"><feDropShadow dx="0" dy="2" stdDeviation="6" flood-color="#6c4f8e" flood-opacity="0.1"/></filter>
+        </defs>
+        <!-- Bubble -->
+        <circle cx="200" cy="165" r="110" fill="#faf8fc" stroke="#6c4f8e" stroke-width="2" stroke-dasharray="8 5" opacity="0.6" filter="url(#sh6)"/>
+        <!-- Person inside -->
+        <circle cx="200" cy="130" r="18" fill="#fff" stroke="#6c4f8e" stroke-width="1.5"/>
+        <text x="200" y="134" text-anchor="middle" font-size="14">👤</text>
+        <!-- Content blocks inside bubble -->
+        <rect x="140" y="165" width="30" height="20" rx="4" fill="#f0eef6" stroke="#6c4f8e" stroke-width="0.8"/>
+        <text x="155" y="179" text-anchor="middle" fill="#6c4f8e" font-size="7">✓ Agree</text>
+        <rect x="175" y="165" width="30" height="20" rx="4" fill="#f0eef6" stroke="#6c4f8e" stroke-width="0.8"/>
+        <rect x="155" y="190" width="30" height="20" rx="4" fill="#f0eef6" stroke="#6c4f8e" stroke-width="0.8"/>
+        <rect x="190" y="190" width="30" height="20" rx="4" fill="#f0eef6" stroke="#6c4f8e" stroke-width="0.8"/>
+        <rect x="225" y="190" width="30" height="20" rx="4" fill="#f0eef6" stroke="#6c4f8e" stroke-width="0.8"/>
+        <rect x="210" y="165" width="30" height="20" rx="4" fill="#f0eef6" stroke="#6c4f8e" stroke-width="0.8"/>
+        <rect x="140" y="215" width="120" height="20" rx="4" fill="#f0eef6" stroke="#6c4f8e" stroke-width="0.8"/>
+        <!-- Blocked content outside -->
+        <text x="320" y="110" text-anchor="middle" fill="#5c5c6e" font-size="8" opacity="0.3">✗ Different</text>
+        <text x="80" y="120" text-anchor="middle" fill="#5c5c6e" font-size="8" opacity="0.3">✗ Challenging</text>
+        <text x="330" y="210" text-anchor="middle" fill="#5c5c6e" font-size="8" opacity="0.3">✗ Alternative</text>
+        <text x="70" y="230" text-anchor="middle" fill="#5c5c6e" font-size="8" opacity="0.3">✗ Opposing</text>
+        <!-- Labels -->
+        <text x="200" y="280" text-anchor="middle" fill="#6c4f8e" font-size="11" font-weight="600" font-style="italic">"Encourages people to think alike"</text>
+        <text x="200" y="305" text-anchor="middle" fill="#5c5c6e" font-size="9">Never exposed to challenging ideas → worldview narrows</text>
+      </svg>
     </div>
   </div>
+</section>
 
-  <div class="slide" data-index="9">
-    <div class="slide-inner">
-      <div class="slide-text">
-        <span class="section-badge">Section ③ &nbsp;·&nbsp; Privacy, Data &amp; Filter Bubbles</span>
-        <h1><span class="accent">Brainwashed</span><br>by the Media?</h1>
-        <ul>
-          <li>Our textbook asks: are we <strong>"brainwashed by the media"</strong> — forced to accept views without thinking?</li>
-          <li>Constant exposure to the same messages can <strong>shape our beliefs</strong> without us realizing it</li>
-          <li>We risk developing a <strong>"skewed impression of the world"</strong> — biased and inaccurate</li>
-          <li>Critical thinking becomes harder when <strong>all inputs agree</strong> with each other</li>
-        </ul>
-      </div>
-      <div class="slide-visual">
-        <svg viewBox="0 0 380 340" xmlns="http://www.w3.org/2000/svg">
-          <!-- Funnel: many inputs → narrowed output -->
-          <!-- Wide top: diverse information -->
-          <text x="190" y="25" text-anchor="middle" fill="#b8a99a" font-size="9">Diverse Information Sources</text>
-          <line x1="60" y1="38" x2="320" y2="38" stroke="#5b8cbe" stroke-width="1.5" opacity="0.5"/>
-          <!-- Left funnel wall -->
-          <line x1="60" y1="38" x2="140" y2="260" stroke="#d4a853" stroke-width="1.2" opacity="0.6"/>
-          <!-- Right funnel wall -->
-          <line x1="320" y1="38" x2="240" y2="260" stroke="#d4a853" stroke-width="1.2" opacity="0.6"/>
-          <!-- Filter layers inside funnel -->
-          <line x1="85" y1="90" x2="295" y2="90" stroke="#c4655c" stroke-width="0.7" opacity="0.4" stroke-dasharray="4 3"/>
-          <text x="310" y="94" fill="#c4655c" font-size="7">Algorithm</text>
-          <line x1="105" y1="145" x2="275" y2="145" stroke="#c4655c" stroke-width="0.7" opacity="0.4" stroke-dasharray="4 3"/>
-          <text x="290" y="149" fill="#c4655c" font-size="7">Self-selection</text>
-          <line x1="125" y1="200" x2="255" y2="200" stroke="#c4655c" stroke-width="0.7" opacity="0.4" stroke-dasharray="4 3"/>
-          <text x="270" y="204" fill="#c4655c" font-size="7">Social circle</text>
-          <!-- Narrow output -->
-          <rect x="150" y="260" width="80" height="30" rx="6" fill="#c4655c" opacity="0.18" stroke="#c4655c" stroke-width="1"/>
-          <text x="190" y="280" text-anchor="middle" fill="#c4655c" font-size="9" font-weight="600">Narrowed View</text>
-          <!-- Arrow down -->
-          <polygon points="190,298 182,292 198,292" fill="#c4655c" opacity="0.6"/>
-          <text x="190" y="318" text-anchor="middle" fill="#b8a99a" font-size="9" font-style="italic">"Brainwashed by the media?"</text>
-        </svg>
-      </div>
+<!-- SLIDE 9: Brainwashed -->
+<section data-transition="slide">
+  <div class="badge">Section ③ · Privacy, Data &amp; Filter Bubbles</div>
+  <div class="row">
+    <div class="col-text">
+      <h1><span class="accent-red">Brainwashed</span><br>by the Media?</h1>
+      <ul>
+        <li class="fragment">Are we <strong>"brainwashed by the media"</strong> — forced to accept views without thinking?</li>
+        <li class="fragment">Constant exposure to the same messages <strong>shapes our beliefs</strong> silently</li>
+        <li class="fragment">We develop a <strong>"skewed impression of the world"</strong></li>
+        <li class="fragment">Critical thinking suffers when <strong>all inputs agree</strong></li>
+      </ul>
+    </div>
+    <div class="col-visual">
+      <svg viewBox="0 0 400 350" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="sh7"><feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#000" flood-opacity="0.06"/></filter>
+        </defs>
+        <!-- Top: diverse inputs -->
+        <text x="200" y="22" text-anchor="middle" fill="#5c5c6e" font-size="10" font-weight="600">Information Sources</text>
+        <!-- Various input blocks -->
+        <rect x="30" y="34" width="60" height="18" rx="4" fill="#fff" stroke="#2c5f8a" stroke-width="0.8"/>
+        <text x="60" y="47" text-anchor="middle" fill="#2c5f8a" font-size="7">📰 News</text>
+        <rect x="100" y="34" width="60" height="18" rx="4" fill="#fff" stroke="#398564" stroke-width="0.8"/>
+        <text x="130" y="47" text-anchor="middle" fill="#398564" font-size="7">📚 Research</text>
+        <rect x="170" y="34" width="60" height="18" rx="4" fill="#fff" stroke="#d4773a" stroke-width="0.8"/>
+        <text x="200" y="47" text-anchor="middle" fill="#d4773a" font-size="7">💬 Social</text>
+        <rect x="240" y="34" width="60" height="18" rx="4" fill="#fff" stroke="#6c4f8e" stroke-width="0.8"/>
+        <text x="270" y="47" text-anchor="middle" fill="#6c4f8e" font-size="7">🎬 Video</text>
+        <rect x="310" y="34" width="60" height="18" rx="4" fill="#fff" stroke="#c0392b" stroke-width="0.8"/>
+        <text x="340" y="47" text-anchor="middle" fill="#c0392b" font-size="7">📻 Radio</text>
+        <!-- Funnel -->
+        <line x1="80" y1="58" x2="140" y2="270" stroke="#c0392b" stroke-width="1.5" opacity="0.5"/>
+        <line x1="320" y1="58" x2="260" y2="270" stroke="#c0392b" stroke-width="1.5" opacity="0.5"/>
+        <!-- Filter layers inside -->
+        <line x1="95" y1="110" x2="305" y2="110" stroke="#c0392b" stroke-width="0.8" opacity="0.3" stroke-dasharray="4 3"/>
+        <text x="315" y="114" fill="#c0392b" font-size="7">Algorithm filter</text>
+        <line x1="115" y1="165" x2="285" y2="165" stroke="#c0392b" stroke-width="0.8" opacity="0.3" stroke-dasharray="4 3"/>
+        <text x="295" y="169" fill="#c0392b" font-size="7">Self-selection</text>
+        <line x1="130" y1="220" x2="270" y2="220" stroke="#c0392b" stroke-width="0.8" opacity="0.3" stroke-dasharray="4 3"/>
+        <text x="280" y="224" fill="#c0392b" font-size="7">Social circle</text>
+        <!-- Narrow output -->
+        <rect x="155" y="270" width="90" height="36" rx="10" fill="#c0392b" opacity="0.12" stroke="#c0392b" stroke-width="1.5"/>
+        <text x="200" y="294" text-anchor="middle" fill="#c0392b" font-size="10" font-weight="700">Narrowed View</text>
+        <polygon points="200,312 192,306 208,306" fill="#c0392b" opacity="0.5"/>
+        <text x="200" y="332" text-anchor="middle" fill="#c0392b" font-size="9" font-style="italic">"Brainwashed by the media?"</text>
+      </svg>
     </div>
   </div>
+</section>
 
-<!-- ============================================================ -->
+<!-- ================================================================ -->
 <!-- SECTION ④: MANIPULATION & TRADE-OFFS (Slides 10–12) -->
-<!-- ============================================================ -->
+<!-- ================================================================ -->
 
-  <div class="slide" data-index="10">
-    <div class="slide-inner">
-      <div class="slide-text">
-        <span class="section-badge">Section ④ &nbsp;·&nbsp; Manipulation &amp; Trade-offs</span>
-        <h1><span class="accent">Advertising</span> Overload</h1>
-        <ul>
-          <li>The textbook criticizes that media <strong>"has too much advertising"</strong></li>
-          <li>Ads are <strong>everywhere</strong> — in videos, social feeds, search results, even in apps</li>
-          <li>Modern advertising is <strong>personalized</strong> using your own data against you</li>
-          <li>Constant commercial pressure makes us <strong>materialistic</strong> — always wanting more</li>
-        </ul>
-      </div>
-      <div class="slide-visual">
-        <svg viewBox="0 0 380 350" xmlns="http://www.w3.org/2000/svg">
-          <!-- Screen / phone representing media -->
-          <rect x="130" y="40" width="120" height="200" rx="10" fill="#1c3050" stroke="#eee6d8" stroke-width="1.2" opacity="0.6"/>
-          <rect x="142" y="60" width="96" height="160" rx="4" fill="#0b1622"/>
-          <!-- Content area -->
-          <rect x="152" y="70" width="76" height="12" rx="2" fill="#eee6d8" opacity="0.12"/>
-          <line x1="156" y1="76" x2="224" y2="76" stroke="#eee6d8" stroke-width="0.8" opacity="0.3"/>
-          <!-- Ad 1 -->
-          <rect x="152" y="90" width="76" height="22" rx="3" fill="#e0884a" opacity="0.2" stroke="#e0884a" stroke-width="0.8"/>
-          <text x="190" y="104" text-anchor="middle" fill="#e0884a" font-size="7">SPONSORED AD</text>
-          <!-- Content -->
-          <rect x="152" y="118" width="76" height="8" rx="2" fill="#eee6d8" opacity="0.08"/>
-          <line x1="156" y1="122" x2="220" y2="122" stroke="#eee6d8" stroke-width="0.6" opacity="0.2"/>
-          <!-- Ad 2 -->
-          <rect x="152" y="132" width="76" height="22" rx="3" fill="#e0884a" opacity="0.2" stroke="#e0884a" stroke-width="0.8"/>
-          <text x="190" y="146" text-anchor="middle" fill="#e0884a" font-size="7">PROMOTED POST</text>
-          <!-- Content -->
-          <rect x="152" y="160" width="76" height="8" rx="2" fill="#eee6d8" opacity="0.08"/>
-          <!-- Ad 3 -->
-          <rect x="152" y="174" width="76" height="22" rx="3" fill="#e0884a" opacity="0.2" stroke="#e0884a" stroke-width="0.8"/>
-          <text x="190" y="188" text-anchor="middle" fill="#e0884a" font-size="7">VIDEO AD · 15s</text>
-          <!-- Content -->
-          <rect x="152" y="202" width="76" height="6" rx="2" fill="#eee6d8" opacity="0.06"/>
-          <!-- Ads floating around the screen -->
-          <rect x="30" y="100" width="70" height="28" rx="6" fill="#1c3050" stroke="#e0884a" stroke-width="1" opacity="0.7"/>
-          <text x="65" y="118" text-anchor="middle" fill="#e0884a" font-size="7">BUY NOW</text>
-          <rect x="280" y="80" width="70" height="28" rx="6" fill="#1c3050" stroke="#e0884a" stroke-width="1" opacity="0.7"/>
-          <text x="315" y="98" text-anchor="middle" fill="#e0884a" font-size="7">LIMITED OFFER</text>
-          <rect x="280" y="200" width="70" height="28" rx="6" fill="#1c3050" stroke="#e0884a" stroke-width="1" opacity="0.7"/>
-          <text x="315" y="218" text-anchor="middle" fill="#e0884a" font-size="7">SUBSCRIBE</text>
-          <rect x="30" y="200" width="70" height="28" rx="6" fill="#1c3050" stroke="#e0884a" stroke-width="1" opacity="0.7"/>
-          <text x="65" y="218" text-anchor="middle" fill="#e0884a" font-size="7">FREE TRIAL</text>
-          <!-- Dollar signs -->
-          <text x="100" y="140" text-anchor="middle" fill="#e0884a" font-size="14" opacity="0.4">$</text>
-          <text x="280" y="150" text-anchor="middle" fill="#e0884a" font-size="14" opacity="0.4">$</text>
-          <text x="190" y="280" text-anchor="middle" fill="#b8a99a" font-size="9" font-style="italic">"Has too much advertising" — and it's getting worse</text>
-          <text x="190" y="300" text-anchor="middle" fill="#b8a99a" font-size="8">Makes us materialistic, always wanting more</text>
-        </svg>
-      </div>
+<!-- SLIDE 10: Advertising Overload -->
+<section data-transition="slide">
+  <div class="badge">Section ④ · Manipulation &amp; Trade-offs</div>
+  <div class="row">
+    <div class="col-text">
+      <h1><span class="accent-red">Advertising</span> Overload</h1>
+      <ul>
+        <li class="fragment">The textbook says media <strong>"has too much advertising"</strong></li>
+        <li class="fragment">Ads are <strong>everywhere</strong> — videos, feeds, search results, apps</li>
+        <li class="fragment">Modern ads are <strong>personalized</strong> using your own data</li>
+        <li class="fragment">Constant commercial pressure makes us <strong>materialistic</strong></li>
+      </ul>
+    </div>
+    <div class="col-visual">
+      <svg viewBox="0 0 400 360" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="sh8"><feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#000" flood-opacity="0.06"/></filter>
+        </defs>
+        <!-- Phone/screen -->
+        <rect x="125" y="25" width="150" height="240" rx="14" fill="#fff" stroke="#1a1a28" stroke-width="1.8" filter="url(#sh8)"/>
+        <rect x="138" y="50" width="124" height="195" rx="4" fill="#faf9f7"/>
+        <!-- Content area -->
+        <rect x="150" y="62" width="100" height="14" rx="3" fill="#e8e5df"/>
+        <line x1="155" y1="69" x2="245" y2="69" stroke="#7f8c8d" stroke-width="1.2" opacity="0.3"/>
+        <!-- Ad 1 -->
+        <rect x="150" y="86" width="100" height="28" rx="5" fill="#fef6f5" stroke="#e74c3c" stroke-width="1"/>
+        <text x="200" y="104" text-anchor="middle" fill="#c0392b" font-size="8" font-weight="600">💰 SPONSORED POST</text>
+        <!-- Content -->
+        <rect x="150" y="122" width="100" height="10" rx="3" fill="#e8e5df" opacity="0.5"/>
+        <!-- Ad 2 -->
+        <rect x="150" y="140" width="100" height="28" rx="5" fill="#fef6f5" stroke="#e74c3c" stroke-width="1"/>
+        <text x="200" y="158" text-anchor="middle" fill="#c0392b" font-size="8" font-weight="600">📢 PROMOTED CONTENT</text>
+        <!-- Content -->
+        <rect x="150" y="176" width="100" height="10" rx="3" fill="#e8e5df" opacity="0.5"/>
+        <rect x="150" y="194" width="100" height="10" rx="3" fill="#e8e5df" opacity="0.4"/>
+        <!-- Ad 3 -->
+        <rect x="150" y="212" width="100" height="24" rx="5" fill="#fef6f5" stroke="#e74c3c" stroke-width="1"/>
+        <text x="200" y="228" text-anchor="middle" fill="#c0392b" font-size="8" font-weight="600">🎬 VIDEO AD · 15s</text>
+        <!-- Ads floating outside -->
+        <rect x="15" y="90" width="75" height="30" rx="8" fill="#fff" stroke="#d4773a" stroke-width="1.2" filter="url(#sh8)"/>
+        <text x="52" y="109" text-anchor="middle" fill="#d4773a" font-size="8" font-weight="600">BUY NOW!</text>
+        <rect x="305" y="70" width="80" height="30" rx="8" fill="#fff" stroke="#d4773a" stroke-width="1.2" filter="url(#sh8)"/>
+        <text x="345" y="89" text-anchor="middle" fill="#d4773a" font-size="8" font-weight="600">LIMITED OFFER</text>
+        <rect x="305" y="200" width="80" height="30" rx="8" fill="#fff" stroke="#d4773a" stroke-width="1.2" filter="url(#sh8)"/>
+        <text x="345" y="219" text-anchor="middle" fill="#d4773a" font-size="8" font-weight="600">SUBSCRIBE!</text>
+        <rect x="15" y="220" width="70" height="30" rx="8" fill="#fff" stroke="#d4773a" stroke-width="1.2" filter="url(#sh8)"/>
+        <text x="50" y="239" text-anchor="middle" fill="#d4773a" font-size="8" font-weight="600">FREE TRIAL</text>
+        <!-- Dollar signs -->
+        <text x="100" y="300" font-size="16" fill="#d4773a" opacity="0.2">$$$</text>
+        <text x="300" y="300" font-size="16" fill="#d4773a" opacity="0.2">$$$</text>
+        <text x="200" y="315" text-anchor="middle" fill="#5c5c6e" font-size="9" font-style="italic">"Has too much advertising" — makes us materialistic</text>
+      </svg>
     </div>
   </div>
+</section>
 
-  <div class="slide" data-index="11">
-    <div class="slide-inner">
-      <div class="slide-text">
-        <span class="section-badge">Section ④ &nbsp;·&nbsp; Manipulation &amp; Trade-offs</span>
-        <h1>The <span class="accent">Trade-off</span> We Face</h1>
-        <ul>
-          <li>"<strong>There is a trade-off for whatever you do</strong>" — our textbook's key warning</li>
-          <li>We trade <strong>privacy for convenience</strong> — free services aren't really free</li>
-          <li>We trade <strong>depth for breadth</strong> — more connections, shallower relationships?</li>
-          <li>We trade <strong>attention for entertainment</strong> — who benefits from your time?</li>
-        </ul>
-      </div>
-      <div class="slide-visual">
-        <svg viewBox="0 0 380 350" xmlns="http://www.w3.org/2000/svg">
-          <!-- Balance scale -->
-          <rect x="155" y="200" width="70" height="20" rx="3" fill="#1c3050" stroke="#d4a853" stroke-width="1"/>
-          <line x1="190" y1="200" x2="190" y2="85" stroke="#d4a853" stroke-width="1.4"/>
-          <line x1="70" y1="95" x2="310" y2="95" stroke="#d4a853" stroke-width="1.8"/>
-          <circle cx="190" cy="95" r="6" fill="#1c3050" stroke="#d4a853" stroke-width="1.3"/>
-          <!-- Left pan: What we GET -->
-          <line x1="75" y1="95" x2="75" y2="120" stroke="#5baea0" stroke-width="1"/>
-          <path d="M35 120 Q75 145 115 120" fill="none" stroke="#5baea0" stroke-width="1.3"/>
-          <text x="75" y="170" text-anchor="middle" fill="#5baea0" font-size="12" font-weight="600">What We Get</text>
-          <text x="75" y="186" text-anchor="middle" fill="#b8a99a" font-size="8">Free services</text>
-          <text x="75" y="198" text-anchor="middle" fill="#b8a99a" font-size="8">Entertainment</text>
-          <text x="75" y="210" text-anchor="middle" fill="#b8a99a" font-size="8">Connection</text>
-          <!-- Right pan: What we LOSE (heavier — tilting down) -->
-          <line x1="305" y1="95" x2="305" y2="130" stroke="#c4655c" stroke-width="1.1"/>
-          <path d="M265 130 Q305 158 345 130" fill="none" stroke="#c4655c" stroke-width="1.4"/>
-          <text x="305" y="182" text-anchor="middle" fill="#c4655c" font-size="12" font-weight="600">What We Lose</text>
-          <text x="305" y="198" text-anchor="middle" fill="#b8a99a" font-size="8">Privacy</text>
-          <text x="305" y="210" text-anchor="middle" fill="#b8a99a" font-size="8">Time</text>
-          <text x="305" y="222" text-anchor="middle" fill="#b8a99a" font-size="8">Real connection</text>
-          <text x="305" y="234" text-anchor="middle" fill="#b8a99a" font-size="8">Independent thought</text>
-          <!-- Tilt indicator -->
-          <text x="190" y="135" text-anchor="middle" fill="#d4a853" font-size="9" font-weight="600">?</text>
-          <!-- Bottom -->
-          <text x="190" y="280" text-anchor="middle" fill="#b8a99a" font-size="9" font-style="italic">"There is a trade-off for whatever you do"</text>
-          <text x="190" y="300" text-anchor="middle" fill="#eee6d8" font-size="9">The question is: are we getting a fair deal?</text>
-        </svg>
-      </div>
+<!-- SLIDE 11: The Trade-off -->
+<section data-transition="slide">
+  <div class="badge">Section ④ · Manipulation &amp; Trade-offs</div>
+  <div class="row">
+    <div class="col-text">
+      <h1>The <span class="accent-red">Trade-off</span><br>We Face</h1>
+      <ul>
+        <li class="fragment">"<strong>There is a trade-off for whatever you do</strong>" — key chapter warning</li>
+        <li class="fragment">We trade <strong>privacy for convenience</strong> — free services aren't free</li>
+        <li class="fragment">We trade <strong>depth for breadth</strong> — more connections, shallower relationships?</li>
+        <li class="fragment">We trade <strong>attention for entertainment</strong> — who really benefits?</li>
+      </ul>
+    </div>
+    <div class="col-visual">
+      <svg viewBox="0 0 420 360" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="sh9"><feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#000" flood-opacity="0.06"/></filter>
+        </defs>
+        <!-- Base -->
+        <rect x="160" y="230" width="100" height="24" rx="4" fill="#fff" stroke="#b8860b" stroke-width="1.5" filter="url(#sh9)"/>
+        <!-- Pillar -->
+        <line x1="210" y1="230" x2="210" y2="95" stroke="#b8860b" stroke-width="1.8"/>
+        <!-- Beam -->
+        <line x1="65" y1="105" x2="355" y2="105" stroke="#b8860b" stroke-width="2.2" stroke-linecap="round"/>
+        <circle cx="210" cy="105" r="7" fill="#fff" stroke="#b8860b" stroke-width="1.8"/>
+
+        <!-- Left pan: what we GET -->
+        <line x1="70" y1="105" x2="70" y2="135" stroke="#398564" stroke-width="1.2"/>
+        <path d="M25 135 Q70 165 115 135" fill="#f0faf7" stroke="#398564" stroke-width="1.5"/>
+        <text x="70" y="190" text-anchor="middle" fill="#398564" font-size="12" font-weight="700">What We Get</text>
+        <text x="70" y="208" text-anchor="middle" fill="#5c5c6e" font-size="8">🆓 Free services</text>
+        <text x="70" y="222" text-anchor="middle" fill="#5c5c6e" font-size="8">🎬 Entertainment</text>
+        <text x="70" y="236" text-anchor="middle" fill="#5c5c6e" font-size="8">🌐 Connection</text>
+
+        <!-- Right pan: what we LOSE (heavier, lower) -->
+        <line x1="350" y1="105" x2="350" y2="148" stroke="#c0392b" stroke-width="1.3"/>
+        <path d="M300 148 Q350 182 400 148" fill="#fef6f5" stroke="#c0392b" stroke-width="1.8"/>
+        <text x="350" y="206" text-anchor="middle" fill="#c0392b" font-size="12" font-weight="700">What We Lose</text>
+        <text x="350" y="224" text-anchor="middle" fill="#5c5c6e" font-size="8">🔒 Privacy</text>
+        <text x="350" y="238" text-anchor="middle" fill="#5c5c6e" font-size="8">⏰ Time</text>
+        <text x="350" y="252" text-anchor="middle" fill="#5c5c6e" font-size="8">💭 Independent thought</text>
+        <text x="350" y="266" text-anchor="middle" fill="#5c5c6e" font-size="8">🤝 Real connection</text>
+
+        <!-- Tilt indicator -->
+        <text x="210" y="152" text-anchor="middle" fill="#b8860b" font-size="12" font-weight="700">?</text>
+
+        <text x="210" y="310" text-anchor="middle" fill="#5c5c6e" font-size="9" font-style="italic">"There is a trade-off for whatever you do"</text>
+        <text x="210" y="330" text-anchor="middle" fill="#1a1a28" font-size="10" font-weight="500">Are we getting a fair deal?</text>
+      </svg>
     </div>
   </div>
+</section>
 
-  <div class="slide" data-index="12">
-    <div class="slide-inner">
-      <div class="slide-text">
-        <span class="section-badge">Section ④ &nbsp;·&nbsp; Manipulation &amp; Trade-offs</span>
-        <h1><span class="accent">Interferes</span> with<br>How We Live</h1>
-        <ul>
-          <li>Media "<strong>interferes with the way we spend our time</strong>" — preventing meaningful use</li>
-          <li>It disrupts <strong>real-life interactions</strong>: "cell-phone users babble on, ignoring the world around them"</li>
-          <li>We trade <strong>presence for distraction</strong> — always half-in, half-out of conversations</li>
-          <li>The media's constant presence changes <strong>how we relate to each other</strong></li>
-        </ul>
-      </div>
-      <div class="slide-visual">
-        <svg viewBox="0 0 380 340" xmlns="http://www.w3.org/2000/svg">
-          <!-- Two scenes -->
-          <!-- Left: Ideal (people connecting) -->
-          <rect x="12" y="30" width="170" height="190" rx="10" fill="#152238" stroke="#5baea0" stroke-width="1"/>
-          <text x="97" y="55" text-anchor="middle" fill="#5baea0" font-size="10" font-weight="600">Without Media</text>
-          <circle cx="60" cy="110" r="14" fill="#1c3050" stroke="#5baea0" stroke-width="0.8"/>
-          <text x="60" y="113" text-anchor="middle" font-size="10">🧑</text>
-          <circle cx="134" cy="110" r="14" fill="#1c3050" stroke="#5baea0" stroke-width="0.8"/>
-          <text x="134" y="113" text-anchor="middle" font-size="10">👩</text>
-          <!-- Connection between people -->
-          <line x1="74" y1="110" x2="120" y2="110" stroke="#5baea0" stroke-width="1.2"/>
-          <text x="97" y="145" text-anchor="middle" fill="#5baea0" font-size="8">Real conversation</text>
-          <text x="97" y="158" text-anchor="middle" fill="#b8a99a" font-size="7">Eye contact · Listening</text>
-          <text x="97" y="172" text-anchor="middle" fill="#b8a99a" font-size="7">Present in the moment</text>
-          <!-- Right: Reality (phones between people) -->
-          <rect x="198" y="30" width="170" height="190" rx="10" fill="#152238" stroke="#c4655c" stroke-width="1"/>
-          <text x="283" y="55" text-anchor="middle" fill="#c4655c" font-size="10" font-weight="600">With Media</text>
-          <circle cx="246" cy="110" r="14" fill="#1c3050" stroke="#c4655c" stroke-width="0.8"/>
-          <text x="246" y="113" text-anchor="middle" font-size="10">🧑</text>
-          <circle cx="320" cy="110" r="14" fill="#1c3050" stroke="#c4655c" stroke-width="0.8"/>
-          <text x="320" y="113" text-anchor="middle" font-size="10">👩</text>
-          <!-- Phones between them -->
-          <rect x="268" y="95" width="16" height="28" rx="2" fill="#1c3050" stroke="#c4655c" stroke-width="0.8"/>
-          <rect x="271" y="102" width="10" height="14" rx="1" fill="#d4a853" opacity="0.15"/>
-          <rect x="288" y="98" width="16" height="28" rx="2" fill="#1c3050" stroke="#c4655c" stroke-width="0.8"/>
-          <rect x="291" y="105" width="10" height="14" rx="1" fill="#d4a853" opacity="0.15"/>
-          <text x="283" y="150" text-anchor="middle" fill="#c4655c" font-size="8">Everyone on their phone</text>
-          <text x="283" y="163" text-anchor="middle" fill="#b8a99a" font-size="7">Half-listening</text>
-          <text x="283" y="176" text-anchor="middle" fill="#b8a99a" font-size="7">"Ignoring the world around them"</text>
-          <!-- Bottom quote -->
-          <text x="190" y="260" text-anchor="middle" fill="#b8a99a" font-size="9" font-style="italic">"Cell-phone users babble on, ignoring the world around them"</text>
-          <text x="190" y="280" text-anchor="middle" fill="#eee6d8" font-size="9">— Angeline A. Moscatt, "Technology"</text>
-          <text x="190" y="310" text-anchor="middle" fill="#b8a99a" font-size="8">📱 Media interferes with the way we spend our time</text>
-        </svg>
-      </div>
+<!-- SLIDE 12: Interferes with How We Live -->
+<section data-transition="slide">
+  <div class="badge">Section ④ · Manipulation &amp; Trade-offs</div>
+  <div class="row">
+    <div class="col-text">
+      <h1>Media <span class="accent-red">Interferes</span><br>with Life</h1>
+      <ul>
+        <li class="fragment">Media "<strong>interferes with the way we spend our time</strong>"</li>
+        <li class="fragment">"Cell-phone users babble on, <strong>ignoring the world around them</strong>"</li>
+        <li class="fragment">We trade <strong>presence for distraction</strong> — half in, half out</li>
+        <li class="fragment">The constant presence of screens changes <strong>how we relate</strong></li>
+      </ul>
+    </div>
+    <div class="col-visual">
+      <svg viewBox="0 0 420 340" xmlns="http://www.w3.org/2000/svg">
+        <!-- Left: Real connection -->
+        <rect x="10" y="20" width="190" height="220" rx="12" fill="#f0faf7" stroke="#d5ebe2" stroke-width="1.3"/>
+        <text x="105" y="50" text-anchor="middle" fill="#398564" font-size="11" font-weight="700">Real Connection</text>
+        <circle cx="65" cy="120" r="18" fill="#fff" stroke="#398564" stroke-width="1.2"/>
+        <text x="65" y="124" text-anchor="middle" font-size="14">🧑</text>
+        <circle cx="145" cy="120" r="18" fill="#fff" stroke="#398564" stroke-width="1.2"/>
+        <text x="145" y="124" text-anchor="middle" font-size="14">👩</text>
+        <line x1="83" y1="120" x2="127" y2="120" stroke="#398564" stroke-width="1.5"/>
+        <text x="105" y="165" text-anchor="middle" fill="#398564" font-size="9">👁️ Eye contact</text>
+        <text x="105" y="182" text-anchor="middle" fill="#398564" font-size="9">👂 Active listening</text>
+        <text x="105" y="199" text-anchor="middle" fill="#398564" font-size="9">💛 Present in the moment</text>
+
+        <!-- Right: Media interference -->
+        <rect x="220" y="20" width="190" height="220" rx="12" fill="#fef6f5" stroke="#fcd9d5" stroke-width="1.3"/>
+        <text x="315" y="50" text-anchor="middle" fill="#c0392b" font-size="11" font-weight="700">With Media</text>
+        <circle cx="260" cy="120" r="18" fill="#fff" stroke="#c0392b" stroke-width="1.2"/>
+        <text x="260" y="124" text-anchor="middle" font-size="14">🧑</text>
+        <circle cx="370" cy="120" r="18" fill="#fff" stroke="#c0392b" stroke-width="1.2"/>
+        <text x="370" y="124" text-anchor="middle" font-size="14">👩</text>
+        <!-- Phones between -->
+        <rect x="288" y="100" width="18" height="34" rx="3" fill="#fff" stroke="#c0392b" stroke-width="1"/>
+        <rect x="292" y="108" width="10" height="16" rx="1" fill="#fef0ee"/>
+        <rect x="318" y="100" width="18" height="34" rx="3" fill="#fff" stroke="#c0392b" stroke-width="1"/>
+        <rect x="322" y="108" width="10" height="16" rx="1" fill="#fef0ee"/>
+        <text x="315" y="165" text-anchor="middle" fill="#c0392b" font-size="9">📱 On phones</text>
+        <text x="315" y="182" text-anchor="middle" fill="#c0392b" font-size="9">👻 Half-listening</text>
+        <text x="315" y="199" text-anchor="middle" fill="#c0392b" font-size="9">🚫 Ignoring each other</text>
+
+        <text x="210" y="275" text-anchor="middle" fill="#5c5c6e" font-size="9" font-style="italic">"Cell-phone users babble on, ignoring the world around them"</text>
+        <text x="210" y="295" text-anchor="middle" fill="#1a1a28" font-size="9">— Angeline A. Moscatt, "Technology"</text>
+        <text x="210" y="325" text-anchor="middle" fill="#c0392b" font-size="8">📱 Media interferes with how we spend our time</text>
+      </svg>
     </div>
   </div>
+</section>
 
-<!-- ============================================================ -->
+<!-- ================================================================ -->
 <!-- CONCLUSION -->
-<!-- ============================================================ -->
+<!-- ================================================================ -->
 
-  <div class="slide" data-index="13">
-    <div class="slide-inner full" style="place-items:center;">
-      <div class="slide-text" style="text-align:center;max-width:750px;">
-        <div class="subtitle">Part 3 &nbsp;·&nbsp; Conclusion</div>
-        <h1><span class="accent">Technology</span> — Blessing<br>or Curse?</h1>
-        <svg viewBox="0 0 320 190" xmlns="http://www.w3.org/2000/svg" style="max-width:280px;margin:1rem auto;">
-          <rect x="148" y="148" width="24" height="16" rx="2" fill="#1c3050" stroke="#d4a853" stroke-width="1"/>
-          <line x1="160" y1="148" x2="160" y2="64" stroke="#d4a853" stroke-width="1.1"/>
-          <line x1="60" y1="72" x2="260" y2="72" stroke="#d4a853" stroke-width="1.4"/>
-          <circle cx="160" cy="72" r="5" fill="#1c3050" stroke="#d4a853" stroke-width="1.1"/>
-          <line x1="65" y1="72" x2="65" y2="92" stroke="#5baea0" stroke-width="0.9"/>
-          <path d="M32 92 Q65 112 98 92" fill="none" stroke="#5baea0" stroke-width="1.1"/>
-          <text x="65" y="128" text-anchor="middle" fill="#5baea0" font-size="12" font-weight="600">Blessing</text>
-          <text x="65" y="142" text-anchor="middle" fill="#b8a99a" font-size="8">Connects · Informs · Empowers</text>
-          <line x1="255" y1="72" x2="255" y2="92" stroke="#c4655c" stroke-width="0.9"/>
-          <path d="M222 92 Q255 112 288 92" fill="none" stroke="#c4655c" stroke-width="1.1"/>
-          <text x="255" y="128" text-anchor="middle" fill="#c4655c" font-size="12" font-weight="600">Curse</text>
-          <text x="255" y="142" text-anchor="middle" fill="#b8a99a" font-size="8">Divides · Addicts · Exploits</text>
-        </svg>
-        <p style="color:var(--cream-dim);font-size:0.95rem;line-height:1.7;max-width:650px;margin-inline:auto;">
-          The media is <strong style="color:var(--cream);">neither purely good nor purely bad</strong>.
-          The key is <strong style="color:var(--gold);">awareness, balance, and conscious consumption</strong>.
-          Understanding the disadvantages is the first step toward using media wisely.
-        </p>
-        <p style="color:var(--cream-dim);font-size:0.85rem;margin-top:1.2rem;font-style:italic;">
-          "Technology — blessing or curse?" — Angeline A. Moscatt
-        </p>
-      </div>
-    </div>
+<!-- SLIDE 13: Conclusion -->
+<section data-transition="zoom">
+  <div class="center-all" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;">
+    <div class="badge">Conclusion</div>
+    <h1 style="font-size:2.4em;text-align:center;"><span class="accent-red">Technology</span> — Blessing<br>or Curse?</h1>
+    <svg viewBox="0 0 340 210" xmlns="http://www.w3.org/2000/svg" style="width:280px;margin:20px 0;">
+      <rect x="148" y="168" width="44" height="18" rx="3" fill="#fff" stroke="#b8860b" stroke-width="1.4"/>
+      <line x1="170" y1="168" x2="170" y2="72" stroke="#b8860b" stroke-width="1.5"/>
+      <line x1="55" y1="82" x2="285" y2="82" stroke="#b8860b" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="170" cy="82" r="6" fill="#fff" stroke="#b8860b" stroke-width="1.5"/>
+      <line x1="60" y1="82" x2="60" y2="108" stroke="#398564" stroke-width="1.1"/>
+      <path d="M22 108 Q60 138 98 108" fill="#f0faf7" stroke="#398564" stroke-width="1.4"/>
+      <text x="60" y="152" text-anchor="middle" fill="#398564" font-size="13" font-weight="700">Blessing</text>
+      <text x="60" y="168" text-anchor="middle" fill="#5c5c6e" font-size="9">Connects · Informs · Empowers</text>
+      <line x1="280" y1="82" x2="280" y2="108" stroke="#c0392b" stroke-width="1.1"/>
+      <path d="M242 108 Q280 138 318 108" fill="#fef6f5" stroke="#c0392b" stroke-width="1.4"/>
+      <text x="280" y="152" text-anchor="middle" fill="#c0392b" font-size="13" font-weight="700">Curse</text>
+      <text x="280" y="168" text-anchor="middle" fill="#5c5c6e" font-size="9">Divides · Addicts · Exploits</text>
+    </svg>
+    <p style="font-size:0.85em;color:var(--text-dim);text-align:center;max-width:650px;line-height:1.7;">
+      The media is <strong>neither purely good nor purely bad</strong>.
+      The key is <strong style="color:var(--red);">awareness, balance, and conscious consumption</strong>.
+    </p>
+    <p style="font-size:0.8em;color:var(--text-dim);text-align:center;margin-top:12px;font-style:italic;">
+      "Technology — blessing or curse?" — Angeline A. Moscatt
+    </p>
   </div>
+</section>
 
 </div>
-
-<div class="nav-arrows">
-  <button class="nav-btn" id="prevBtn" aria-label="Previous">←</button>
-  <span class="slide-counter" id="counter">1 / 14</span>
-  <button class="nav-btn" id="nextBtn" aria-label="Next">→</button>
 </div>
-<div class="page-dots" id="pageDots"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.min.js"></script>
 <script>
-(function(){
-  const slides=document.querySelectorAll('.slide');
-  const prevBtn=document.getElementById('prevBtn');
-  const nextBtn=document.getElementById('nextBtn');
-  const counter=document.getElementById('counter');
-  const dotsContainer=document.getElementById('pageDots');
-  let current=0; const total=slides.length;
-
-  for(let i=0;i<total;i++){
-    const dot=document.createElement('span');
-    dot.className='page-dot'+(i===0?' active':'');
-    dot.addEventListener('click',()=>goTo(i));
-    dotsContainer.appendChild(dot);
-  }
-
-  function updateCounter(){
-    counter.textContent=(current+1)+' / '+total;
-    document.querySelectorAll('.page-dot').forEach((d,i)=>d.classList.toggle('active',i===current));
-  }
-
-  function goTo(index){
-    if(index===current||index<0||index>=total)return;
-    const old=slides[current],nxt=slides[index],fwd=index>current;
-    old.classList.remove('active'); old.classList.add(fwd?'exit-left':'exit-right');
-    nxt.classList.remove('exit-left','exit-right');
-    nxt.style.transform=fwd?'translateX(60px)':'translateX(-60px)'; nxt.style.opacity='0';
-    nxt.offsetHeight; nxt.classList.add('active'); nxt.style.transform=''; nxt.style.opacity='';
-    current=index; updateCounter();
-    setTimeout(()=>old.classList.remove('exit-left','exit-right'),600);
-  }
-
-  prevBtn.addEventListener('click',()=>goTo(current-1));
-  nextBtn.addEventListener('click',()=>goTo(current+1));
-  document.addEventListener('keydown',e=>{
-    if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' '){e.preventDefault();goTo(current+1);}
-    if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();goTo(current-1);}
+  Reveal.initialize({
+    hash: true,
+    center: false,
+    transition: 'slide',
+    transitionSpeed: 'default',
+    backgroundTransition: 'fade',
+    slideNumber: 'c/t',
+    progress: true,
+    controls: true,
+    controlsLayout: 'bottom-right',
+    width: 1280,
+    height: 720,
+    margin: 0.08,
+    minScale: 0.5,
+    maxScale: 2.0,
+    fragments: true,
+    fragmentInURL: false,
   });
-})();
 </script>
 </body>
 </html>
